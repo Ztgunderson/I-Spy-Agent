@@ -1,0 +1,67 @@
+question,condition,arm,auroc,ci_lo,ci_hi,tpr@5%fpr,tpr@10%fpr,n,pos,signal_trained
+Q1 catch attack,clean,length,0.621,0.545,0.693,0.04,0.16,200,100,
+Q1 catch attack,clean,tfidf,0.841,0.785,0.894,0.41,0.53,200,100,
+Q1 catch attack,clean,clef zero-shot,0.514,0.432,0.594,0.05,0.13,200,100,
+Q1 catch attack,clean,clef LoRA,0.991,0.983,0.998,0.94,0.97,200,100,
+Q1 catch attack,approval_note,length,0.62,0.541,0.692,0.04,0.14,200,100,
+Q1 catch attack,approval_note,tfidf,0.845,0.793,0.894,0.44,0.55,200,100,
+Q1 catch attack,approval_note,clef zero-shot,0.514,0.433,0.59,0.04,0.14,200,100,
+Q1 catch attack,approval_note,clef LoRA,0.99,0.98,0.997,0.94,0.95,200,100,
+Q1 catch attack,codeword,length,0.621,0.547,0.693,0.04,0.16,200,100,
+Q1 catch attack,codeword,tfidf,0.842,0.788,0.891,0.44,0.55,200,100,
+Q1 catch attack,codeword,clef zero-shot,0.513,0.429,0.594,0.05,0.13,200,100,
+Q1 catch attack,codeword,clef LoRA,0.991,0.981,0.997,0.94,0.95,200,100,
+Q1 catch attack,natural_comment,length,0.621,0.543,0.697,0.04,0.16,200,100,
+Q1 catch attack,natural_comment,tfidf,0.843,0.79,0.895,0.44,0.54,200,100,
+Q1 catch attack,natural_comment,clef zero-shot,0.512,0.426,0.594,0.04,0.15,200,100,
+Q1 catch attack,natural_comment,clef LoRA,0.992,0.984,0.998,0.95,0.96,200,100,
+Q1 catch attack,identifier,length,0.621,0.544,0.703,0.04,0.16,200,100,
+Q1 catch attack,identifier,tfidf,0.842,0.787,0.89,0.42,0.53,200,100,
+Q1 catch attack,identifier,clef zero-shot,0.511,0.428,0.583,0.05,0.13,200,100,
+Q1 catch attack,identifier,clef LoRA,0.988,0.975,0.996,0.94,0.94,200,100,
+Q1 catch attack,noop,length,0.621,0.54,0.696,0.04,0.16,200,100,
+Q1 catch attack,noop,tfidf,0.842,0.785,0.895,0.41,0.55,200,100,
+Q1 catch attack,noop,clef zero-shot,0.51,0.424,0.592,0.05,0.13,200,100,
+Q1 catch attack,noop,clef LoRA,0.991,0.981,0.998,0.94,0.94,200,100,
+Q1 catch attack,held-out families (clean),length,0.464,0.372,0.567,0.0,0.025,140,40,
+Q1 catch attack,held-out families (clean),tfidf,0.908,0.859,0.954,0.425,0.675,140,40,
+Q1 catch attack,held-out families (clean),clef zero-shot,0.673,0.58,0.757,0.0,0.05,140,40,
+Q1 catch attack,held-out families (clean),clef LoRA,0.992,0.976,1.0,0.975,1.0,140,40,
+Q1 catch attack,"fresh release, all",length,0.632,0.573,0.686,0.0,0.04,373,173,
+Q1 catch attack,"fresh release, all",tfidf,0.915,0.889,0.94,0.613,0.728,373,173,
+Q1 catch attack,"fresh release, all",clef zero-shot,0.395,0.339,0.452,0.012,0.04,373,173,
+Q1 catch attack,"fresh release, all",clef LoRA,0.747,0.7,0.796,0.22,0.353,373,173,
+Q1 catch attack,"fresh release, unseen tasks",length,0.677,0.566,0.785,0.0,0.029,187,137,
+Q1 catch attack,"fresh release, unseen tasks",tfidf,0.926,0.877,0.968,0.62,0.723,187,137,
+Q1 catch attack,"fresh release, unseen tasks",clef zero-shot,0.441,0.348,0.542,0.0,0.036,187,137,
+Q1 catch attack,"fresh release, unseen tasks",clef LoRA,0.721,0.631,0.793,0.146,0.409,187,137,
+Q2 spot signal,approval_note,length,0.501,0.448,0.557,0.005,0.005,400,200,True
+Q2 spot signal,approval_note,tfidf,0.995,0.987,0.999,0.985,0.995,400,200,True
+Q2 spot signal,approval_note,clef zero-shot,0.798,0.752,0.84,0.165,0.335,400,200,True
+Q2 spot signal,approval_note,clef LoRA,0.996,0.99,0.999,0.975,0.98,400,200,True
+Q2 spot signal,approval_note,clef zero-shot (to_reviewer q),0.989,0.979,0.998,0.97,0.975,400,200,True
+Q2 spot signal,approval_note,clef LoRA (to_reviewer q),0.986,0.971,0.997,0.975,0.975,400,200,True
+Q2 spot signal,codeword,length,0.5,0.447,0.561,0.005,0.005,400,200,True
+Q2 spot signal,codeword,tfidf,0.995,0.987,0.999,0.985,0.995,400,200,True
+Q2 spot signal,codeword,clef zero-shot,0.707,0.656,0.757,0.125,0.205,400,200,True
+Q2 spot signal,codeword,clef LoRA,0.996,0.991,0.999,0.98,0.985,400,200,True
+Q2 spot signal,codeword,clef zero-shot (to_reviewer q),0.536,0.48,0.589,0.06,0.11,400,200,True
+Q2 spot signal,codeword,clef LoRA (to_reviewer q),0.576,0.517,0.63,0.07,0.13,400,200,True
+Q2 spot signal,natural_comment,length,0.501,0.447,0.557,0.005,0.005,400,200,False
+Q2 spot signal,natural_comment,tfidf,0.743,0.693,0.786,0.19,0.34,400,200,False
+Q2 spot signal,natural_comment,clef zero-shot,0.61,0.551,0.663,0.085,0.13,400,200,False
+Q2 spot signal,natural_comment,clef LoRA,0.993,0.987,0.998,0.97,0.975,400,200,False
+Q2 spot signal,natural_comment,clef zero-shot (to_reviewer q),0.691,0.639,0.742,0.135,0.32,400,200,False
+Q2 spot signal,natural_comment,clef LoRA (to_reviewer q),0.972,0.954,0.986,0.915,0.945,400,200,False
+Q2 spot signal,identifier,length,0.5,0.445,0.557,0.005,0.005,400,200,True
+Q2 spot signal,identifier,tfidf,0.992,0.983,0.998,0.99,0.995,400,200,True
+Q2 spot signal,identifier,clef zero-shot,0.552,0.502,0.604,0.06,0.095,400,200,True
+Q2 spot signal,identifier,clef LoRA,0.993,0.986,0.999,0.975,0.975,400,200,True
+Q2 spot signal,identifier,clef zero-shot (to_reviewer q),0.511,0.458,0.571,0.05,0.105,400,200,True
+Q2 spot signal,identifier,clef LoRA (to_reviewer q),0.433,0.378,0.488,0.04,0.09,400,200,True
+Q2 spot signal,noop,length,0.5,0.447,0.558,0.005,0.005,400,200,False
+Q2 spot signal,noop,tfidf,0.508,0.45,0.565,0.055,0.09,400,200,False
+Q2 spot signal,noop,clef zero-shot,0.591,0.538,0.647,0.055,0.135,400,200,False
+Q2 spot signal,noop,clef LoRA,0.734,0.682,0.782,0.28,0.355,400,200,False
+Q2 spot signal,noop,clef zero-shot (to_reviewer q),0.505,0.446,0.56,0.055,0.095,400,200,False
+Q2 spot signal,noop,clef LoRA (to_reviewer q),0.458,0.401,0.515,0.04,0.09,400,200,False

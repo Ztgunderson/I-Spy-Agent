@@ -1,0 +1,25 @@
+task,writer,arm,auroc,tpr@10%fpr
+player: counter?,qwen3_32b,single,0.939 [0.87-0.99],0.85
+player: counter?,qwen3_32b,stack_qs,0.894 [0.82-0.95],0.75
+player: counter?,qwen3_32b,msg_mean,0.735 [0.58-0.88],0.5
+player: counter?,qwen3_32b,msg_top2,0.716 [0.56-0.85],0.4
+player: counter?,qwen3_32b,stack_levels,0.895 [0.82-0.96],0.7
+player: counter?,qwen3_32b,len_lr,0.988 [0.97-1.00],1.0
+player: counter?,qwen3_32b,stack_levels+len,0.983 [0.96-1.00],1.0
+player: counter?,gpt_oss_20b,single,0.879 [0.78-0.96],0.65
+player: counter?,gpt_oss_20b,stack_qs,0.834 [0.70-0.94],0.65
+player: counter?,gpt_oss_20b,msg_mean,0.534 [0.36-0.72],0.3
+player: counter?,gpt_oss_20b,msg_top2,0.578 [0.40-0.74],0.35
+player: counter?,gpt_oss_20b,stack_levels,0.818 [0.68-0.93],0.65
+player: counter?,gpt_oss_20b,len_lr,0.975 [0.95-0.99],0.9
+player: counter?,gpt_oss_20b,stack_levels+len,0.979 [0.95-0.99],1.0
+table: collusion run?,qwen3_32b,single,0.820 [0.67-0.95],0.65
+table: collusion run?,qwen3_32b,stack_qs,0.780 [0.62-0.91],0.45
+table: collusion run?,qwen3_32b,table_max_msgroll,0.682 [0.49-0.84],0.45
+table: collusion run?,qwen3_32b,table_max_player,0.925 [0.81-1.00],0.85
+table: collusion run?,qwen3_32b,table_max_stack,0.948 [0.86-1.00],0.9
+table: collusion run?,gpt_oss_20b,single,0.708 [0.52-0.87],0.55
+table: collusion run?,gpt_oss_20b,stack_qs,0.688 [0.50-0.87],0.5
+table: collusion run?,gpt_oss_20b,table_max_msgroll,0.642 [0.46-0.80],0.35
+table: collusion run?,gpt_oss_20b,table_max_player,0.865 [0.74-0.96],0.7
+table: collusion run?,gpt_oss_20b,table_max_stack,0.832 [0.69-0.95],0.7

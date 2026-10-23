@@ -13,6 +13,8 @@ dependencies = [
 ]
 
 [dependency-groups]
+test = ["pytest>=8.0"]
+
 # LoRA fine-tuning of Clef-flash (stegowatch.clef_lora). Same pins as handyman's train group.
 train = [
     "torch==2.12.0",

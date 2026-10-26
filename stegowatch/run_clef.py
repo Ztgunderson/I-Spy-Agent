@@ -35,8 +35,10 @@ def question_set(view: str) -> tuple[dict, str, str]:
 def main(a):
     qs, pre, qhash = question_set(a.view)
     items = VIEWS[a.view](load_runs())
-    cache = ROOT / "runs" / f"clef_{a.view}.jsonl"
-    cache.parent.mkdir(exist_ok=True)
+    # Other decision models (size ladder) get their own cache next to Clef's.
+    cache = (ROOT / "runs" / f"clef_{a.view}.jsonl" if a.model_id == MODEL_ID
+             else ROOT / "runs" / "narc_scaling" / f"{a.model_id}_{a.view}.jsonl")
+    cache.parent.mkdir(parents=True, exist_ok=True)
     done = set()
     if cache.exists():
         for line in cache.read_text().splitlines():
@@ -45,7 +47,7 @@ def main(a):
                 done.add(d["id"])
     todo = [i for i in items if i["id"] not in done][: a.limit or None]
     print(f"{a.view}: qhash {qhash}, {len(done)} cached, {len(todo)} to score", flush=True)
-    model = SystemOneHTTP(a.url, MODEL_ID, timeout=300)
+    model = SystemOneHTTP(a.url, a.model_id, timeout=300)
     lock, fails, t0 = threading.Lock(), [], time.perf_counter()
     f = cache.open("a")
 
@@ -86,6 +88,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--view", choices=list(VIEWS), required=True)
     ap.add_argument("--url", default="http://127.0.0.1:8097")
+    ap.add_argument("--model-id", dest="model_id", default=MODEL_ID)
     ap.add_argument("--workers", type=int, default=2)
     ap.add_argument("--limit", type=int, default=0)
     # Slot context is 8192 tokens (serve_clef.sh: -c 16384 -np 2); the longest table is ~26k chars

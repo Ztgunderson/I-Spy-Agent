@@ -29,7 +29,7 @@ import pandas as pd
 from . import config, corpus
 from .generator import Example, build_dataset
 
-DEFAULT_CORPUS = config.ROOT.parent / "data" / "linuxarena_files.jsonl"
+DEFAULT_CORPUS = config.ROOT / "data" / "linuxarena_files.jsonl"
 
 
 @dataclass(frozen=True)

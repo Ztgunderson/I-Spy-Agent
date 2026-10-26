@@ -42,13 +42,26 @@ STAGES = {
     "stage2": StageConfig(
         name="stage2",
         backbone="clef",
-        model_id=config.MODEL_CLEF,
+        model_id=config.resolved_model_id("clef"),
         pretrained_head=True,
     ),
     "stage3": StageConfig(
         name="stage3",
         backbone="base",
-        model_id=config.MODEL_BASE,
+        model_id=config.resolved_model_id("base"),
+        pretrained_head=False,
+    ),
+    # Same recipe on the 0.85B d3-lite and its plain base (fresh readout).
+    "stage2_d3lite": StageConfig(
+        name="stage2_d3lite",
+        backbone="d3",
+        model_id=config.resolved_model_id("d3"),
+        pretrained_head=True,
+    ),
+    "stage3_qwen08b": StageConfig(
+        name="stage3_qwen08b",
+        backbone="d3base",
+        model_id=config.resolved_model_id("d3base"),
         pretrained_head=False,
     ),
 }
@@ -234,9 +247,9 @@ def run_sweep(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=["stage2", "stage3", "smoke"])
+    parser.add_argument("command", choices=[*STAGES, "smoke"])
     parser.add_argument("--sizes", nargs="+", type=int, default=list(config.TRAIN_SIZES))
-    parser.add_argument("--stage", choices=["stage2", "stage3"], default="stage2")
+    parser.add_argument("--stage", choices=list(STAGES), default="stage2")
     parser.add_argument("--dataset", type=Path, default=config.DATA / "dataset.jsonl")
     parser.add_argument("--out-root", type=Path, default=config.RUNS)
     parser.add_argument("--max-steps", type=int, default=None)

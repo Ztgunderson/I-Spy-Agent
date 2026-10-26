@@ -266,23 +266,31 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--stage-dir", type=Path, default=None)
     parser.add_argument("--zero-shot", action="store_true")
+    parser.add_argument("--backbone", default="clef", help="zero-shot backbone (clef or d3)")
     parser.add_argument("--dataset", type=Path, default=config.DATA / "dataset.jsonl")
     parser.add_argument("--out-dir", type=Path, default=config.RESULTS)
     parser.add_argument("--target-fpr", type=float, default=0.01)
     parser.add_argument("--max-records", type=int, default=None)
     parser.add_argument("--full-schema", action="store_true")
+    parser.add_argument(
+        "--splits",
+        nargs="+",
+        default=["val", "u1", "u2", "u3", "honest"],
+        help="splits to score; add 'train' for the in-sample AUC (slow, ~2.7k files)",
+    )
     args = parser.parse_args()
 
-    records = read_dataset(args.dataset)
+    records = [record for record in read_dataset(args.dataset) if record.split in args.splits]
     if args.max_records:
         records = records[: args.max_records]
     schema = SCHEMA if args.full_schema else TRAIN_SCHEMA
 
     if args.zero_shot:
         model = load_file_model(
-            "clef", config.MODEL_4BIT, pretrained_head=True, schema=schema
+            args.backbone, config.resolved_model_id(args.backbone), pretrained_head=True,
+            schema=schema,
         )
-        tag = "zeroshot"
+        tag = "zeroshot" if args.backbone == "clef" else f"zeroshot_{args.backbone}"
     else:
         if args.stage_dir is None:
             raise SystemExit("--stage-dir is required unless --zero-shot is set")
@@ -298,9 +306,11 @@ def main() -> None:
     )
     metrics_frame = report(scores, target_fpr=args.target_fpr)
     args.out_dir.mkdir(parents=True, exist_ok=True)
-    scores_path = args.out_dir / "stage23_scores.jsonl"
+    # One pair of files per checkpoint so a sweep does not overwrite itself.
+    name = config.sanitize_name(tag)
+    scores_path = args.out_dir / f"stage23_scores_{name}.jsonl"
     scores.to_json(scores_path, orient="records", lines=True)
-    metrics_path = args.out_dir / "stage23_metrics.csv"
+    metrics_path = args.out_dir / f"stage23_metrics_{name}.csv"
     metrics_frame.to_csv(metrics_path, index=False)
     pd.set_option("display.width", 220)
     print(metrics_frame.to_string(index=False))

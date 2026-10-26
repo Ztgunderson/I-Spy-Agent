@@ -27,6 +27,10 @@ MODEL_CLEF = "Cloudflare/clef-flash"
 # organisation publishes the base under a different repo id.
 MODEL_BASE = "Qwen/Qwen3.5-9B-Base"
 
+# d3-lite (vLLM-SR) and its base, for the small-model fine-tune and its control.
+MODEL_D3 = "vllm-sr/d3-lite"
+MODEL_D3_BASE = "Qwen/Qwen3.5-0.8B-Base"
+
 SEED = 0
 N_PER_FAMILY_STAGE0 = 6
 N_PER_FAMILY_TRAIN = 100
@@ -85,8 +89,9 @@ def lora_target_regex(layer_indices: tuple[int, ...], num_layers: int) -> str:
     suffixes = "|".join(_LORA_SUFFIXES)
     # Real module paths put ``self_attn`` between the layer index and the
     # projection name (``layers.31.self_attn.q_proj``); allow that path but
-    # still reject other layers and non-attention modules.
-    return rf".*\.layers\.({layers})\.(?:.*\.)?({suffixes})$"
+    # still reject other layers and non-attention modules. PEFT also matches names
+    # relative to the wrapped module (``layers.31...``), so the prefix is optional.
+    return rf"(?:.*\.)?layers\.({layers})\.(?:.*\.)?({suffixes})$"
 
 
 def resolved_model_id(backbone: str) -> str:
@@ -97,6 +102,10 @@ def resolved_model_id(backbone: str) -> str:
         return os.getenv("CLEF_MODEL_ID", MODEL_CLEF)
     if backbone == "base":
         return os.getenv("CLEF_BASE_MODEL", MODEL_BASE)
+    if backbone == "d3":
+        return os.getenv("D3_MODEL_ID", MODEL_D3)
+    if backbone == "d3base":
+        return os.getenv("D3_BASE_MODEL", MODEL_D3_BASE)
     if backbone == "clef4bit":
         return os.getenv("CLEF_4BIT_MODEL_ID", MODEL_4BIT)
     raise ValueError(f"unknown backbone: {backbone}")

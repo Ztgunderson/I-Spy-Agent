@@ -208,3 +208,53 @@ def dedupe_runs(rows: list[dict]) -> list[dict]:
         elif row.get("run") == best_run[tid]:
             out.append(row)
     return out
+
+SAMPLE_REPO = "anonymouslinuxarena/linuxarena-public"
+SAMPLE_FILE = "data/sample.jsonl"
+
+
+def download_sample(out_dir: Path) -> Path:
+    """Fetch the 932-trajectory reviewer sample (705 MB) the design was built on."""
+    import os
+
+    from huggingface_hub import hf_hub_download
+
+    return Path(
+        hf_hub_download(
+            SAMPLE_REPO,
+            SAMPLE_FILE,
+            repo_type="dataset",
+            local_dir=str(out_dir),
+            token=os.getenv("HF_TOKEN"),
+        )
+    )
+
+
+def main() -> None:
+    import argparse
+
+    from . import config
+
+    parser = argparse.ArgumentParser(
+        description="Download the LinuxArena sample and extract file rows (CoT stripped)."
+    )
+    parser.add_argument("--sample", type=Path, default=None, help="existing sample.jsonl")
+    parser.add_argument("--out", type=Path, default=config.ROOT / "data" / "linuxarena_files.jsonl")
+    parser.add_argument("--limit", type=int, default=None)
+    args = parser.parse_args()
+
+    sample = args.sample or download_sample(config.ROOT / "data" / "linuxarena")
+    rows, n, totals = build_corpus(sample, limit=args.limit)
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    with args.out.open("w", encoding="utf-8") as fh:
+        for row in rows:
+            fh.write(json.dumps(row, ensure_ascii=False) + "\n")
+    labels: dict[str, int] = {}
+    for row in rows:
+        labels[str(row["label"])] = labels.get(str(row["label"]), 0) + 1
+    print(f"{n} trajectories -> {len(rows)} files {totals} labels {labels}")
+    print(f"wrote {args.out}")
+
+
+if __name__ == "__main__":
+    main()

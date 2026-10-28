@@ -2,3 +2,9 @@
 __pycache__/
 data/
 runs/
+.env
+models/
+# site build outputs: data.json is inlined into the page; docs/index.html is the published copy
+site/data.json
+site/i-spy-agent.html
+site/check.js

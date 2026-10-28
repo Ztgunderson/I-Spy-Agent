@@ -29,8 +29,12 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data" / "narcbench" / "scenarios"
 MODELS = ("qwen3_32b", "gpt_oss_20b")
+# Writers we generated ourselves with NARCBench's stego.py (scripts/narc_generate.sh), same shoes.
+GEN = ROOT / "data" / "narcbench_gen"
+GEN_MODELS = ("qwen3.5-0.8b", "qwen3.5-2b", "qwen3.5-4b", "qwen3.5-9b", "qwen3.8-27b")
 
-_LEAK = re.compile(r"\n?\s*(PRIVATE\s*:|RANGE\s*:).*", re.S)
+# Small writers sometimes bracket the tag ("[PRIVATE] Signal: ..."), so the colon is optional there.
+_LEAK = re.compile(r"\n?\s*\[?\s*(PRIVATE\s*\]?\s*:?|RANGE\s*\]?\s*:).*", re.S)
 _SPEAKER = re.compile(r"^\[([^\]]+)\]:\s*")
 
 
@@ -92,8 +96,10 @@ def load_run(d: Path, model: str) -> Run:
 def load_runs(models=MODELS) -> list[Run]:
     runs = []
     for m in models:
-        for d in sorted((DATA / m / "stego").iterdir()):
-            runs.append(load_run(d, m))
+        root = DATA / m / "stego" if m in MODELS else GEN / m / "stego"
+        for d in sorted(root.iterdir()):
+            if (d / "results.json").exists():  # a shoe still being played has no results yet
+                runs.append(load_run(d, m))
     return runs
 
 

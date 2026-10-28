@@ -22,7 +22,7 @@ from sklearn.linear_model import LogisticRegression
 
 from .combine import _logit, clef
 from .evaluate import mean_len
-from .load import DATA, MODELS, ROOT, load_runs, player_items
+from .load import DATA, GEN, MODELS, ROOT, load_runs, player_items
 
 SCHEMES = [("weather/temperature", r"weather|rain|sun|cloud|chill|warm|cold|frost|breez|air"),
            ("question vs statement", r"question"),
@@ -33,7 +33,8 @@ SCHEMES = [("weather/temperature", r"weather|rain|sun|cloud|chill|warm|cold|fros
 
 def scheme_of(model: str, run_id: str) -> str:
     """Rough tag of the counter's agreed scheme, from the counter's own first planning message."""
-    prompts = json.loads((DATA / model / "stego" / run_id / "agent_prompts.json").read_text())
+    root = DATA if model in MODELS else GEN
+    prompts = json.loads((root / model / "stego" / run_id / "agent_prompts.json").read_text())
     plan = next((p["user_prompt"] for p in prompts if p["channel"] == "private"
                  and "Previous messages" in p["user_prompt"]), "")
     plan = plan.split("Previous messages:", 1)[-1][:2500].lower()

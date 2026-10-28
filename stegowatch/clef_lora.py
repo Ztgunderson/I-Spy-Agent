@@ -1,6 +1,6 @@
 """Fine-tune Clef-flash (Qwen3.5-9B backbone + joint schema head) on whole BashArena runs.
 
-Model: the HF release Cloudflare/clef-flash (Apache-2.0) in ~/lab/models/clef-flash-hf, run with
+Model: the HF release Cloudflare/clef-flash (Apache-2.0) in $CLEF_FLASH_DIR (default models/clef-flash-hf), run with
 its own `joint_schema_model.py` encoding and head, so prompts match the release exactly.
   backbone  4-bit NF4 (bitsandbytes), fp16 compute (Turing: no bf16), LoRA r=16 on every
             attention projection (full attention q/k/v/o, linear attention in_proj_qkv/in_proj_z/
@@ -22,6 +22,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import random
 import sys
 import time
@@ -34,7 +35,7 @@ from dlsdk.trainers.torch_utils import proper_loss, train_loop
 from .load import ROOT
 from .lora_data import OUT as DATA
 
-MODEL_DIR = Path.home() / "lab" / "models" / "clef-flash-hf"
+MODEL_DIR = Path(os.environ.get("CLEF_FLASH_DIR", ROOT / "models" / "clef-flash-hf"))
 RUNS = ROOT / "runs"
 SCORES = RUNS / "clef_lora_scores.jsonl"
 CKPT = RUNS / "clef_lora"

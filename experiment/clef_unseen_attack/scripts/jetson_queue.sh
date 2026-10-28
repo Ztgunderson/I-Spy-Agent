@@ -4,13 +4,13 @@
 # Resumable: a model with runs/scaling/<name>.done (or .skip) is not rerun.
 # The next model downloads in the background while the current one scores.
 #
-#   LLAMA_SERVER=~/lab/tools/llama.cpp-b11889/src/build/bin/llama-server \
+#   LLAMA_SERVER=/path/to/llama-server \
 #     nohup bash experiment/clef_unseen_attack/scripts/jetson_queue.sh > runs/scaling/queue.log 2>&1 &
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 cd "$ROOT"
-LLAMA_SERVER="${LLAMA_SERVER:-$HOME/lab/tools/llama.cpp-b11889/src/build/bin/llama-server}"
+LLAMA_SERVER="${LLAMA_SERVER:-llama-server}"
 MODELS_TSV="experiment/clef_unseen_attack/models_scaling.tsv"
 GGUF_DIR="${GGUF_DIR:-$HOME/stegowatch-gguf}"
 OUT="runs/scaling"

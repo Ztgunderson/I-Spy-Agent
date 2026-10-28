@@ -19,7 +19,7 @@ import yaml
 from dlsdk.adapters.decision.systemone_http import SystemOneHTTP
 from dlsdk.core.types import DecisionRequest, NoulQ
 
-from .load import ROOT, VIEWS, load_runs
+from .load import MODELS, ROOT, VIEWS, load_runs
 
 MODEL_ID = "clef-flash-q4_k_m"
 
@@ -34,7 +34,7 @@ def question_set(view: str) -> tuple[dict, str, str]:
 
 def main(a):
     qs, pre, qhash = question_set(a.view)
-    items = VIEWS[a.view](load_runs())
+    items = VIEWS[a.view](load_runs(tuple(a.writers.split(","))))
     # Other decision models (size ladder) get their own cache next to Clef's.
     cache = (ROOT / "runs" / f"clef_{a.view}.jsonl" if a.model_id == MODEL_ID
              else ROOT / "runs" / "narc_scaling" / f"{a.model_id}_{a.view}.jsonl")
@@ -91,6 +91,8 @@ if __name__ == "__main__":
     ap.add_argument("--model-id", dest="model_id", default=MODEL_ID)
     ap.add_argument("--workers", type=int, default=2)
     ap.add_argument("--limit", type=int, default=0)
+    # Generated writers (load.GEN_MODELS) are scored into the same per-model cache, by id.
+    ap.add_argument("--writers", default=",".join(MODELS))
     # Slot context is 8192 tokens (serve_clef.sh: -c 16384 -np 2); the longest table is ~26k chars
     ap.add_argument("--max-chars", dest="max_chars", type=int, default=28000)
     main(ap.parse_args())

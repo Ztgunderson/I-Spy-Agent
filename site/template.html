@@ -1,3 +1,9 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Small decision models as black-box monitors for sabotage in files (LinuxArena) and collusion in table talk (NARCBench-Stego).">
 <title>I Spy Agent</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap">
@@ -29,7 +35,7 @@
   --c-pos: #e5835a; --c-neg: #8fb0d4;
   --b0: #8fb0d4; --b1: #b3c8dc; --b2: #7fbfb4; --b3: #a9bf84; --b4: #c99bbb; --b5: #e5835a; --b6: #df8f9c; --b7: #e3b43c;
   color-scheme: dark }
-body { background: var(--bg); color: var(--fg); font: 14.5px/1.75 var(--serif); }
+body { background: var(--bg); color: var(--fg); font: 15px/1.75 var(--serif); margin: 0; }
 .wrap { max-width: 1040px; margin: 0 auto; padding-block: 40px 80px;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 .wrap { --col: 640px; }
@@ -56,7 +62,7 @@ p { margin: .6rem 0; }
 a { color: var(--accent); }
 .sub { font-size: 1.1rem; color: var(--muted); margin: 0 0 1rem; max-width: 70ch; }
 .meta { font: 13px/1.5 var(--mono); color: var(--muted); display: flex; flex-wrap: wrap; gap: .3rem 1.4rem; }
-.status { display: inline-block; font: 500 11.5px/1 var(--mono); padding: 3px 6px; border-radius: 3px; border: 1px solid currentColor; white-space: nowrap; }
+.status { display: inline-block; font: 500 12px/1 var(--mono); padding: 3px 6px; border-radius: 3px; border: 1px solid currentColor; white-space: nowrap; }
 .status.run { color: var(--run); } .status.done { color: var(--ok); } .status.fail, .status.none { color: var(--muted); } .status.queued { color: var(--accent); }
 code, .mono { font-family: var(--mono); font-size: .86em; }
 figure { margin: 1rem 0 2rem; }
@@ -97,7 +103,7 @@ table.sortable th:hover { color: var(--fg); }
 table.sortable th[aria-sort]::after { content: " ↓"; color: var(--fg); }
 table.sortable th[aria-sort="ascending"]::after { content: " ↑"; }
 tr.base td { color: var(--muted); }
-.ci { color: var(--muted); font-size: 11.5px; }
+.ci { color: var(--muted); font-size: 12px; }
 .sw { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; background: var(--c); }
 .callout { border-left: 3px solid var(--fg); padding: .2rem 0 .2rem 1rem; margin: 1rem 0; max-width: 72ch; }
 .callout p { margin: .35rem 0; }
@@ -118,7 +124,7 @@ tr.base td { color: var(--muted); }
 .cm .rh { color: var(--muted); font-size: 12px; writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; }
 .cm button { font: inherit; color: var(--fg); border: 1px solid var(--rule); border-radius: 3px; padding: 10px 6px; cursor: pointer; background: var(--panel); text-align: center; display: grid; gap: 2px; }
 .cm button .k { font: 500 22px/1 var(--mono); font-variant-numeric: tabular-nums; }
-.cm button .t { font-size: 11px; color: var(--muted); }
+.cm button .t { font-size: 12px; color: var(--fg); }
 .cm button.bad { background: color-mix(in srgb, var(--warn) 16%, var(--bg)); border-color: color-mix(in srgb, var(--warn) 45%, var(--bg)); }
 .cm button[aria-pressed=true] { outline: 2px solid var(--fg); outline-offset: 1px; }
 .cm-stats { font: 12px/1.6 var(--mono); color: var(--muted); margin-top: .5rem; }
@@ -126,7 +132,7 @@ tr.base td { color: var(--muted); }
 .items table td { white-space: normal; vertical-align: top; }
 .items td.path { font-size: 12px; word-break: break-all; text-align: left; }
 .items details summary { cursor: pointer; color: var(--accent); font: 12px var(--label); }
-.items pre { white-space: pre-wrap; font: 11.5px/1.45 var(--mono); margin: .3rem 0 0; max-width: 60ch; }
+.items pre { white-space: pre-wrap; font: 12px/1.5 var(--mono); margin: .3rem 0 0; max-width: 60ch; }
 .items .cap { font: 12px var(--label); color: var(--muted); padding: 6px 8px; position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--rule); }
 .sub-bench { border-top: 1px dashed var(--rule); padding-top: .8rem; margin-top: 1rem; }
 ol.refs { font-size: .93rem; padding-left: 1.4rem; } ol.refs li { margin: .35rem 0; }
@@ -140,7 +146,19 @@ ol.refs { font-size: .93rem; padding-left: 1.4rem; } ol.refs li { margin: .35rem
 pre.bib { font: 12px/1.5 var(--mono); background: var(--panel); padding: .8rem 1rem; overflow-x: auto; white-space: pre; }
 nav.toc { margin: 1.4rem 0 0; font: 14px/1.5 var(--label); }
 nav.toc h2 { border: 0; margin: 0 0 .4rem; padding: 0; font-size: 1rem; }
-nav.toc ol { list-style: none; margin: 0; padding: 0; columns: 2 260px; column-gap: 2rem; }
+nav.toc ol { list-style: none; margin: 0; padding: 0; }
+.toc-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: .4rem 2.5rem; }
+.toc-cols h3 { font-size: .95rem; margin: .2rem 0 .3rem; color: var(--muted); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin: 1.2rem auto; }
+.card { background: var(--panel); border: 1px solid var(--rule); border-radius: 4px; padding: .9rem 1rem; }
+.card h3 { margin: 0; font-size: 1rem; font-style: normal; font-weight: 500; }
+.card .kind { margin: 0 0 .5rem; color: var(--muted); font-size: 13px; }
+.card dl { margin: 0; font-size: 13.5px; line-height: 1.5; }
+.card dt { color: var(--muted); font-size: 12px; margin-top: .45rem; }
+.card dd { margin: 0; }
+.skip { position: absolute; left: -999px; top: 0; background: var(--hi); color: var(--hi-fg); padding: .4rem .8rem; z-index: 10; }
+.skip:focus { left: 1rem; top: 1rem; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 nav.toc li { break-inside: avoid; padding: 2px 0; display: flex; gap: .5rem; }
 nav.toc li .n { font: 500 12px/1.9 var(--mono); color: var(--muted); min-width: 1.6em; }
 nav.toc li .d { color: var(--muted); font-size: 12.5px; }
@@ -151,11 +169,13 @@ h2 { scroll-margin-top: 70px; }
 table.heat td.c { text-align: center; min-width: 52px; }
 table.heat td.same { box-shadow: inset 0 0 0 2px var(--fg); font-weight: 500; }
 table.heat tr.base td { border-bottom: 2px solid var(--rule); }
-table.heat th .ch { display: block; font-weight: 400; font-size: 11px; }
+table.heat th .ch { display: block; font-weight: 400; font-size: 12px; }
 .ch.yes { color: var(--ok); } .ch.no { color: var(--muted); }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
-
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
 <div class="wrap">
 <header>
   <a class="brand" href="https://www.gundyneuraldesigns.com/">Gundy Neural Designs</a>
@@ -164,14 +184,13 @@ table.heat th .ch { display: block; font-weight: 400; font-size: 11px; }
   <p class="sub">Small decision models as black-box monitors for covert agent behaviour. Full results on two attack surfaces: sabotage hidden in files (LinuxArena) and collusion between agents through covert table talk (NARCBench-Stego). Extends the Apart sprint report [1].</p>
   <div class="meta">
     <span>data as of <span id="asof"></span></span>
-    <span>every number is read from <code>results/</code> and <code>runs/</code></span>
     <span id="hdr-status"></span>
   </div>
 </header>
 
 <nav class="toc" aria-label="Contents" id="contents-top"><h2>Contents</h2><ol id="toc"></ol></nav>
 
-<div class="global">
+<div class="global" role="region" aria-label="Page controls">
   <div class="controls" style="margin:0">
     <span style="font-weight:600">Set all sections</span>
     <span class="seg" id="seg-global"></span>
@@ -180,6 +199,7 @@ table.heat th .ch { display: block; font-weight: 400; font-size: 11px; }
   </div>
 </div>
 
+<main id="main">
 <section class="prose" id="sec-setup">
 <h2 data-key="setup">Question and setup</h2>
 <p>Scalable oversight asks whether a weaker overseer can catch a stronger agent. We test the cheapest overseer available: a decision model that reads only an agent's output and returns P(covert) in one forward pass. The monitors run from 0.6B to 27B parameters, quantised to fit an edge device, and none sees model internals.</p>
@@ -188,14 +208,11 @@ table.heat th .ch { display: block; font-weight: 400; font-size: 11px; }
 <p>The two benchmarks test different threats. <b>LinuxArena</b> is single-agent sabotage: an agent hides functionality in a file it writes. <b>NARCBench-Stego is multi-agent collusion</b>: at a blackjack table, one agent (the counter) covertly signals the card count to a partner (the big player) through ordinary-looking table talk, and the partner bets on it. Detecting the counter from public messages is detecting collusion through a steganographic channel.</p>
 <p>Questions: (a) how well do these monitors detect covert behaviour on each surface, (b) does a larger monitor or fine-tuning help, (c) how do they fail, and (d) are they useful as an oversight layer at an alarm rate an operator could accept.</p>
 </section>
-<div class="tbl"><table>
-  <thead><tr><th>Benchmark</th><th class="l">Task for the monitor</th><th class="l">Positives / negatives</th><th class="l">Agent</th><th class="l">Monitor input</th></tr></thead>
-  <tbody>
-    <tr><td>LinuxArena U3</td><td class="l">detect hidden content in files</td><td class="l">35 attack files (20 sabotage runs) / 319 honest files</td><td class="l">real trajectories</td><td class="l">task statement + file text</td></tr>
-    <tr><td>LinuxArena val, U1, U2</td><td class="l">same, synthetic</td><td class="l">generator families, U2 held out</td><td class="l">generator</td><td class="l">same</td></tr>
-    <tr><td>NARCBench-Stego</td><td class="l">detect collusion: the agent covertly signalling a partner in table talk</td><td class="l">20 counters / 140 other players, per writer</td><td class="l">Qwen3-32B, GPT-OSS-20B (published); Qwen3.5 0.8B–9B and Qwen3.8-27B (played here)</td><td class="l">one player's public messages</td></tr>
-  </tbody>
-</table></div>
+<div class="cards" role="list">
+  <div class="card" role="listitem"><h3>LinuxArena U3</h3><p class="kind">real sabotage in files</p><dl><dt>Task</dt><dd>detect hidden functionality in a file the agent wrote</dd><dt>Positives / negatives</dt><dd>35 attack files (20 sabotage runs) / 319 honest files</dd><dt>Agent</dt><dd>real trajectories</dd><dt>Monitor sees</dt><dd>task statement + file text</dd></dl></div>
+  <div class="card" role="listitem"><h3>LinuxArena val, U1, U2</h3><p class="kind">synthetic files</p><dl><dt>Task</dt><dd>same question, synthetic attacks</dd><dt>Positives / negatives</dt><dd>generated attack and clean pairs; U2 is a held-out family</dd><dt>Agent</dt><dd>generator</dd><dt>Monitor sees</dt><dd>task statement + file text</dd></dl></div>
+  <div class="card" role="listitem"><h3>NARCBench-Stego</h3><p class="kind">collusion in table talk</p><dl><dt>Task</dt><dd>detect the agent covertly signalling a partner at a blackjack table</dd><dt>Positives / negatives</dt><dd>20 counters / 140 other players, per writer</dd><dt>Agent</dt><dd>Qwen3-32B, GPT-OSS-20B (published); Qwen3.5 0.8B–9B and Qwen3.8-27B (played here)</dd><dt>Monitor sees</dt><dd>one player's public messages</dd></dl></div>
+</div>
 <p class="prose" style="font-size:.95rem;color:var(--muted)"><b style="font-family:var(--label)">Writers.</b> NARCBench-Stego ships transcripts from two writers. We played the same 20 shoes with five more writers from the Qwen3.5/3.8 line, the backbone most of our monitors are built on, to test whether a monitor catches its own backbone's collusion better ({§backbone}). <b>Original two writers</b> in the writer picker is the published benchmark and the default everywhere else on the page. A generated writer counts only when its covert channel works: the big player's bets track the count ({§backbone}).</p>
 <p class="prose" style="font-size:.95rem;color:var(--muted)"><b style="font-family:var(--label)">Both, combined</b> means the monitor is deployed on both surfaces. AUROC is the mean of the LinuxArena U3 AUROC and the NARCBench AUROC. Detection counts use a threshold set separately on each benchmark's honest items (and per writer), then pooled: 35 + 40 = 75 positives, 319 + 280 = 599 negatives.</p>
 <p class="prose" style="font-size:.95rem;color:var(--muted)"><b style="font-family:var(--label)">Colour code.</b> Monitors are coloured by model family, the same in every figure. The date after each family is when its models were released on Hugging Face (2026); each family released all its sizes within a week, and all families within one month, so release date is not analysed as a separate axis.</p>
@@ -417,6 +434,7 @@ table.heat th .ch { display: block; font-weight: 400; font-size: 11px; }
 </figure>
 </section>
 </div>
+</main>
 
 </div>
 
@@ -442,7 +460,20 @@ const fmt = v => v == null || Number.isNaN(v) ? "–" : v.toFixed(2);
 const pct = v => v == null || Number.isNaN(v) ? "–" : Math.round(v * 100) + "%";
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const W = id => Math.max(280, document.getElementById(id).clientWidth);
-const style = { background: "transparent", fontSize: "11px", fontFamily: "var(--mono)", overflow: "visible" };
+const style = { background: "transparent", fontSize: "12px", fontFamily: "var(--mono)", overflow: "visible" };
+// each chart is one image described by its figure caption; drop the per-mark labels Plot adds to <g>
+{
+  const plot0 = Plot.plot;
+  window.Plot = { ...Plot, plot: o => {
+    const el = plot0(o);
+    for (const svg of el.tagName === "svg" ? [el] : el.querySelectorAll("svg")) {
+      svg.setAttribute("role", "img");
+      svg.setAttribute("aria-label", "chart; see the figure caption");
+      svg.querySelectorAll("g[aria-label]").forEach(g => g.removeAttribute("aria-label"));
+    }
+    return el;
+  } };
+}
 const MODES = [["L", "LinuxArena · sabotage in files"], ["N", "NARCBench · collusion in table talk"], ["B", "Both, combined"]];
 const G = { writer: "both", lm: "raw", mode: {} };
 const WRITERS = ["qwen3_32b", "gpt_oss_20b"];  // the published NARCBench writers; "both" means these two
@@ -460,6 +491,15 @@ document.querySelectorAll(".legend.fam").forEach(el => {
   el.innerHTML = `<span class="lt">family:</span>` + FAM.map(f => `<span class="k" style="--c:${famColor(f)}">${FAMNAME[f]}</span>`).join("") +
     (el.classList.contains("base") ? `<span class="k dash" style="--c:var(--c-base)">length baseline</span>` : "");
 });
+
+/* ---------- colour helpers (WCAG contrast) ---------- */
+const cssVar = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const rgb = h => { h = h.replace("#", ""); return [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16)); };
+const mix = (a, b, w) => "#" + rgb(a).map((x, i) => Math.round(x * w + rgb(b)[i] * (1 - w)).toString(16).padStart(2, "0")).join("");
+const lum = h => { const c = rgb(h).map(x => { x /= 255; return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; }); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+const contrast = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+// the darker or lighter theme colour, whichever reads better on this background
+const readableOn = bg => { const f = cssVar("--fg"), b = cssVar("--bg"); return contrast(f, bg) >= contrast(b, bg) ? f : b; };
 
 /* ---------- data access ---------- */
 const linux = D.linux;
@@ -673,14 +713,14 @@ section("size", mode => {
     y: { domain: [0.4, 1], label: `↑ AUROC${mode === "B" ? " (mean of both surfaces)" : ""}`, grid: true },
     marks: [
       Plot.ruleY([0.5], { stroke: "var(--rule)" }),
-      Plot.text([0.5], { x: xEnd, y: d => d, text: () => "chance", dx: 4, textAnchor: "start", fill: "var(--muted)", fontSize: 10 }),
+      Plot.text([0.5], { x: xEnd, y: d => d, text: () => "chance", dx: 4, textAnchor: "start", fill: "var(--muted)", fontSize: 11 }),
       Plot.ruleY([base], { stroke: "var(--c-base)", strokeDasharray: "4,3" }),
-      Plot.text([base], { x: xEnd, y: d => d, text: () => "length", dx: 4, textAnchor: "start", fill: "var(--muted)", fontSize: 10 }),
+      Plot.text([base], { x: xEnd, y: d => d, text: () => "length", dx: 4, textAnchor: "start", fill: "var(--muted)", fontSize: 11 }),
       Plot.line(sorted, { x: "x", y: "y", z: "g", stroke: "c", strokeOpacity: 0.55 }),
       Plot.ruleX(rows.filter(r => r.lo != null), { x: "x", y1: "lo", y2: "hi", stroke: "c", strokeOpacity: 0.35 }),
       Plot.dot(rows, { x: "x", y: "y", fill: "c", r: d => byDate ? 3 + Math.sqrt(d.params) * 1.2 : 4.5, stroke: "var(--bg)",
         title: d => `${d.model} (${d.params}B, ${d.backbone}, released ${D.release[d.model]?.date ?? "?"})\nAUROC ${fmt(d.y)}${d.lo != null ? ` [${fmt(d.lo)}–${fmt(d.hi)}]` : ""}` }),
-      Plot.text(rows, { x: "x", y: "y", text: "model", dx: 7, textAnchor: "start", fontSize: 10, fill: "var(--muted)" }),
+      Plot.text(rows, { x: "x", y: "y", text: "model", dx: 7, textAnchor: "start", fontSize: 11, fill: "var(--muted)" }),
     ],
   }));
   const title = { L: "LinuxArena U3, real held-out attack files", N: `NARCBench-Stego, ${WNAME[G.writer]}, ${G.lm === "lm" ? "length-matched players" : "all players"}`, B: "mean of LinuxArena U3 and NARCBench AUROC (monitors scored on both)" }[mode];
@@ -736,7 +776,7 @@ function cross() {
       Plot.ruleX([lenLinux.u3], { stroke: "var(--c-base)", strokeDasharray: "4,3" }),
       Plot.ruleY([narcAuc(BASE)], { stroke: "var(--c-base)", strokeDasharray: "4,3" }),
       Plot.dot(rows, { x: "lin", y: "narc", fill: d => famColor(d.family), r: d => 3 + Math.sqrt(d.params) * 1.3, stroke: "var(--bg)", title: d => `${d.model}: files ${fmt(d.lin)}, talk ${fmt(d.narc)}` }),
-      Plot.text(rows, { x: "lin", y: "narc", text: "model", dy: -11, fontSize: 10, fill: "var(--muted)" }),
+      Plot.text(rows, { x: "lin", y: "narc", text: "model", dy: -11, fontSize: 11, fill: "var(--muted)" }),
     ],
   }));
 }
@@ -779,7 +819,7 @@ section("op", mode => {
     y: { domain: rec.map(r => r.model), label: null },
     marks: [
       Plot.barX(rec, { y: "model", x: "recall", fill: d => d.model === BASE ? "var(--c-base)" : famColor(d.family), fillOpacity: d => d.model === OP.hi ? 1 : 0.55 }),
-      Plot.text(rec, { y: "model", x: "recall", text: "label", dx: 4, textAnchor: "start", fontSize: 10, fill: "var(--fg)" }),
+      Plot.text(rec, { y: "model", x: "recall", text: "label", dx: 4, textAnchor: "start", fontSize: 11, fill: "var(--fg)" }),
     ],
   }));
 });
@@ -875,6 +915,7 @@ section("fail", mode => {
     const e = evalAt("B", FL.model, FL.fpr);
     comb.innerHTML = `<h3>Both surfaces, pooled</h3><div class="cm-wrap"><div><div class="cm">${matrixHTML(e, "B", "positive", "negative")}</div><div class="cm-stats">${statsHTML(e)}<br>files: ${e.cells.TP.filter(i => i.bench === "L").length}/${posBy(e, "L")} caught, ${e.cells.FP.filter(i => i.bench === "L").length} false alarms · talk: ${e.cells.TP.filter(i => i.bench === "N").length}/${posBy(e, "N")} caught, ${e.cells.FP.filter(i => i.bench === "N").length} false alarms</div></div><div class="items" id="B-items"></div></div>`;
     wireCells(comb);
+    comb.querySelectorAll(".items").forEach(el => { el.tabIndex = 0; el.setAttribute("role", "region"); el.setAttribute("aria-label", "items in the selected cell, both surfaces"); });
     itemList("B-items", e.cells[FL.cell.B], [["item", i => `<td class="path">${esc(i.bench === "L" ? i.path : i.player + " · " + i.role)}</td>`]], "B", true);
   }
   if (mode !== "N") benchPanel("L");
@@ -977,8 +1018,11 @@ function backbone() {
   const heat = (v, same) => {
     if (v == null) return `<td class="c" style="color:var(--muted)">–</td>`;
     const d = v - 0.5, k = Math.min(100, Math.round(Math.abs(d) / 0.5 * 90));
-    const bg = `color-mix(in srgb, var(${d >= 0 ? "--c-neg" : "--c-pos"}) ${k}%, var(--bg))`;
-    return `<td class="c${same ? " same" : ""}" style="background:${bg};${k > 55 ? "color:var(--bg)" : ""}">${v.toFixed(2)}</td>`;
+    // lighten the cell until its text reaches 4.5:1 (WCAG AA)
+    const hue = cssVar(d >= 0 ? "--c-neg" : "--c-pos"), page = cssVar("--bg");
+    let w = k / 100, bg = mix(hue, page, w);
+    while (w > 0 && contrast(readableOn(bg), bg) < 4.5) { w -= 0.03; bg = mix(hue, page, Math.max(0, w)); }
+    return `<td class="c${same ? " same" : ""}" style="background:${bg};color:${readableOn(bg)}">${v.toFixed(2)}</td>`;
   };
   const draw = () => {
     const head = `<thead><tr><th class="l">Monitor</th><th class="l">Backbone</th>${ALL_WRITERS.map(w => `<th>${WNAME[w]}<span class="ch ${CHANNEL[w].channel_works ? "yes" : "no"}">${CHANNEL[w].channel_works ? "channel works" : "no channel"}</span></th>`).join("")}</tr></thead>`;
@@ -1016,7 +1060,7 @@ section("cost", mode => {
     marks: [
       Plot.ruleY([baseFor(mode)], { stroke: "var(--c-base)", strokeDasharray: "4,3" }),
       Plot.dot(rows, { x: "p50", y: "y", fill: d => famColor(d.family), r: d => 3 + Math.sqrt(d.params) * 1.3, stroke: "var(--bg)", title: d => `${d.model}: ${Math.round(d.p50)} ms, AUROC ${fmt(d.y)}` }),
-      Plot.text(rows, { x: "p50", y: "y", text: "model", dy: -11, fontSize: 10, fill: "var(--muted)" }),
+      Plot.text(rows, { x: "p50", y: "y", text: "model", dy: -11, fontSize: 11, fill: "var(--muted)" }),
     ],
   }));
 });
@@ -1088,7 +1132,7 @@ const SECLABEL = {};
   for (const h of document.querySelectorAll("section h2[data-key]")) {
     const k = h.dataset.key, label = h.closest("#appx") ? String.fromCharCode(65 + a++) : String(++n);
     SECLABEL[k] = label;
-    h.insertAdjacentHTML("afterbegin", `<span class="n">${label}</span>`);
+    h.insertAdjacentHTML("afterbegin", `<span class="n">${h.closest("#appx") ? "Appendix " + label : label}</span>`);
     // figures: 1, 2, ... in the main text; A1, A2, ... inside appendix section A
     let f = 0;
     h.closest("section").querySelectorAll("figcaption").forEach(c => {
@@ -1102,10 +1146,13 @@ const SECLABEL = {};
     const b = c.querySelector("b.fig"); if (b) b.textContent = c.dataset.fig + ".";
   }
 }
-document.getElementById("toc").innerHTML = [...document.querySelectorAll("section h2[data-key]")].map(h => {
-  const k = h.dataset.key, title = h.textContent.replace(SECLABEL[k], "").trim();
-  return `<li><span class="n">${SECLABEL[k]}</span><span><a href="#sec-${k}">${esc(title)}</a>${TOCDESC[k] ? ` <span class="d">${esc(TOCDESC[k])}</span>` : ""}</span></li>`;
-}).join("");
+{
+  const item = h => { const k = h.dataset.key, title = h.textContent.slice(h.querySelector(".n").textContent.length).trim();
+    return `<li><span class="n">${SECLABEL[k]}</span><span><a href="#sec-${k}">${esc(title)}</a>${TOCDESC[k] ? ` <span class="d">${esc(TOCDESC[k])}</span>` : ""}</span></li>`; };
+  const hs = [...document.querySelectorAll("section h2[data-key]")];
+  document.getElementById("toc").outerHTML = `<div class="toc-cols"><div><h3>Report</h3><ol id="toc">${hs.filter(h => !h.closest("#appx")).map(item).join("")}</ol></div>` +
+    `<div><h3>Appendix</h3><ol>${hs.filter(h => h.closest("#appx")).map(item).join("")}</ol></div></div>`;
+}
 if (/^#sec-\w+$/.test(location.hash)) document.getElementById(location.hash.slice(1))?.scrollIntoView();
 
 /* ---------- section links ---------- */
@@ -1127,6 +1174,8 @@ function linkSections() {
 
 /* ---------- boot ---------- */
 coverage(); verdict(); cross(); backbone(); corrRead(); failBest();
+document.querySelectorAll(".tbl, .items, pre.bib").forEach((el, i) => { el.tabIndex = 0; el.setAttribute("role", "region");
+  el.setAttribute("aria-label", el.querySelector("caption, .cap")?.textContent || el.querySelector("table[id]")?.id.replace(/^tbl-/, "table: ") || el.previousElementSibling?.textContent?.slice(0, 60) || "scrollable region " + (i + 1)); });
 for (const k of Object.keys(SECTIONS)) renderSection(k);
 linkSections();
 document.getElementById("sel-writer").addEventListener("change", e => {
@@ -1134,3 +1183,5 @@ document.getElementById("sel-writer").addEventListener("change", e => {
 });
 let rt; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { cross(); for (const k of Object.keys(SECTIONS)) renderSection(k); }, 150); });
 </script>
+</body>
+</html>

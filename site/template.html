@@ -32,7 +32,20 @@
 body { background: var(--bg); color: var(--fg); font: 14.5px/1.75 var(--serif); }
 .wrap { max-width: 1040px; margin: 0 auto; padding-block: 40px 80px;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
-.prose { max-width: 68ch; }
+.wrap { --col: 640px; }
+.prose { max-width: var(--col); }
+/* one centred column: text at reading width, figures and tables up to the full 1040px */
+.wrap :is(.prose, p, h2, h3, figcaption, .src, .callout, .note, .fnote, .legend, .controls, .sub, .meta, header > *, .global, nav.toc, ul) { margin-left: auto; margin-right: auto; }
+.wrap :is(p, h3, figcaption, .src, .callout, .note, .fnote, .sub, ul, .authors) { max-width: var(--col); }
+.wrap :is(.legend, .controls) { justify-content: center; max-width: var(--col); }
+.wrap .controls { max-width: none; }
+.wrap h2 { max-width: var(--col); }
+nav.toc h2 { max-width: none; }
+.cm-wrap.static { max-width: 900px; margin-left: auto; margin-right: auto; }
+header { text-align: center; }
+header .meta { justify-content: center; }
+.plot { display: flex; flex-direction: column; align-items: center; }
+.cm-wrap.static .cm button { pointer-events: none; }
 h1, h2, h3 { font-family: var(--label); font-weight: 400; text-wrap: balance; line-height: 1.25; }
 h1, h3 { font-style: italic; font-weight: 300; }
 h1 { font-size: 2.4rem; margin: 0 0 .3rem; letter-spacing: .01em; }
@@ -167,8 +180,8 @@ table.heat th .ch { display: block; font-weight: 400; font-size: 11px; }
   </div>
 </div>
 
-<section class="prose">
-<h2><span class="n">1</span>Question and setup</h2>
+<section class="prose" id="sec-setup">
+<h2 data-key="setup">Question and setup</h2>
 <p>Scalable oversight asks whether a weaker overseer can catch a stronger agent. We test the cheapest overseer available: a decision model that reads only an agent's output and returns P(covert) in one forward pass. The monitors run from 0.6B to 27B parameters, quantised to fit an edge device, and none sees model internals.</p>
 <h3>System One models, not an LLM judge</h3>
 <p>The usual black-box monitor is an LLM-as-judge: a chat model reads the transcript, writes a verdict, and a score is parsed from the text. Our monitors are <b>System One models</b> [6]: decision models that "return typed answers with probabilities instead of text". Each one picks from the answers we list, here yes or no to a fixed question, in one forward pass. It writes nothing, so there is no verdict to parse, the score is a probability that a threshold can be set on directly, and the cost is the input alone. NARCBench reports that transcript judges did poorly unless given threat details and examples [2]. We ask whether a small decision model, with one pre-registered question and no examples, does better, and at what cost.</p>
@@ -183,22 +196,13 @@ table.heat th .ch { display: block; font-weight: 400; font-size: 11px; }
     <tr><td>NARCBench-Stego</td><td class="l">detect collusion: the agent covertly signalling a partner in table talk</td><td class="l">20 counters / 140 other players, per writer</td><td class="l">Qwen3-32B, GPT-OSS-20B (published); Qwen3.5 0.8B–9B and Qwen3.8-27B (played here)</td><td class="l">one player's public messages</td></tr>
   </tbody>
 </table></div>
-<p class="prose" style="font-size:.95rem;color:var(--muted)"><b style="font-family:var(--label)">Writers.</b> NARCBench-Stego ships transcripts from two writers. We played the same 20 shoes with five more writers from the Qwen3.5/3.8 line, the backbone most of our monitors are built on, to test whether a monitor catches its own backbone's collusion better (section 8). <b>Original two writers</b> in the writer picker is the published benchmark and the default everywhere else on the page. A generated writer counts only when its covert channel works: the big player's bets track the count (section 8).</p>
+<p class="prose" style="font-size:.95rem;color:var(--muted)"><b style="font-family:var(--label)">Writers.</b> NARCBench-Stego ships transcripts from two writers. We played the same 20 shoes with five more writers from the Qwen3.5/3.8 line, the backbone most of our monitors are built on, to test whether a monitor catches its own backbone's collusion better ({§backbone}). <b>Original two writers</b> in the writer picker is the published benchmark and the default everywhere else on the page. A generated writer counts only when its covert channel works: the big player's bets track the count ({§backbone}).</p>
 <p class="prose" style="font-size:.95rem;color:var(--muted)"><b style="font-family:var(--label)">Both, combined</b> means the monitor is deployed on both surfaces. AUROC is the mean of the LinuxArena U3 AUROC and the NARCBench AUROC. Detection counts use a threshold set separately on each benchmark's honest items (and per writer), then pooled: 35 + 40 = 75 positives, 319 + 280 = 599 negatives.</p>
 <p class="prose" style="font-size:.95rem;color:var(--muted)"><b style="font-family:var(--label)">Colour code.</b> Monitors are coloured by model family, the same in every figure. The date after each family is when its models were released on Hugging Face (2026); each family released all its sizes within a week, and all families within one month, so release date is not analysed as a separate axis.</p>
 <div class="legend fam"></div>
 
-<section>
-<h2><span class="n">2</span>Results by monitor</h2>
-<div class="controls"><span class="seg" data-sec="table"></span></div>
-<div class="legend fam"></div>
-<div class="tbl"><table id="tbl-main" class="sortable"></table></div>
-<p class="prose" style="font-size:13px;color:var(--muted)">Click a column header to sort; click again to reverse. The length baseline stays on the first row.</p>
-<p class="src" id="src-table"></p>
-</section>
-
-<section>
-<h2><span class="n">3</span>Does a larger monitor do better?</h2>
+<section id="sec-size">
+<h2 data-key="size">Does a larger monitor do better?</h2>
 <div class="controls"><span class="seg" data-sec="size"></span>
   <span class="seg small" id="seg-lm"><button aria-pressed="true" data-v="raw">all players</button><button aria-pressed="false" data-v="lm">length-matched players</button></span></div>
 <div class="controls">
@@ -209,30 +213,10 @@ table.heat th .ch { display: block; font-weight: 400; font-size: 11px; }
   <div class="plot" id="fig-size"></div>
   <figcaption id="cap-size"></figcaption>
 </figure>
-<div class="tbl"><table id="tbl-rho"></table></div>
-<figure id="fig-synth-wrap">
-  <h3>Synthetic validation against real files</h3>
-  <div class="legend fam"></div>
-  <div class="legend"><span class="k ring" style="--c:var(--fg)">synthetic validation AUROC</span><span class="k" style="--c:var(--fg)">real held-out AUROC (U3)</span><span class="k dash" style="--c:var(--c-base)">length baseline on U3</span></div>
-  <div class="plot" id="fig-synth"></div>
-  <figcaption><b>Figure 2.</b> Synthetic validation AUROC (open) and real held-out U3 AUROC (filled) for each monitor, ordered by size. LinuxArena only; the 27B monitors have no synthetic score.</figcaption>
-  <span class="src">source: experiment/clef_unseen_attack/results/scaling_table.csv (val_auc, u3_auc)</span>
-</figure>
 </section>
 
-<section>
-<h2><span class="n">4</span>Do the two surfaces agree?</h2>
-<p class="prose">This section always compares both benchmarks. Each point is a monitor scored on both.</p>
-<figure>
-  <div class="legend fam base"></div>
-  <div class="plot" id="fig-cross"></div>
-  <figcaption><b>Figure 3.</b> LinuxArena U3 AUROC against NARCBench AUROC (selected writer, or mean of the two) for each monitor; point size is parameter count. Dashed lines are the length baselines and the diagonal marks equal AUROC.</figcaption>
-  <span class="src">sources: scaling_table.csv · narc_scaling.csv</span>
-</figure>
-</section>
-
-<section>
-<h2><span class="n">5</span>Operating point</h2>
+<section id="sec-op">
+<h2 data-key="op">Operating point</h2>
 <p class="prose">AUROC hides what an operator needs: how many attacks are caught at a tolerable alarm rate. Recall here is computed from per-item scores, with the threshold set on honest items.</p>
 <div class="controls"><span class="seg" data-sec="op"></span>
   <label for="op-fpr">FPR <input type="range" id="op-fpr" min="0.01" max="0.5" step="0.01" value="0.05"></label>
@@ -246,19 +230,124 @@ table.heat th .ch { display: block; font-weight: 400; font-size: 11px; }
     <div><div class="ptitle" id="op-roc-title"></div><div class="plot" id="fig-roc"></div></div>
     <div><div class="ptitle">Positives caught at the chosen FPR</div><div class="plot" id="fig-recall"></div></div>
   </div>
-  <figcaption><b>Figure 4.</b> Left: recall against FPR for the highlighted monitor (grey: other monitors; dotted line: chosen FPR). Right: share of positives caught at the chosen FPR, with counts and false positives.</figcaption>
+  <figcaption><b class="fig"></b> Left: recall against FPR for the highlighted monitor (grey: other monitors; dotted line: chosen FPR). Right: share of positives caught at the chosen FPR, with counts and false positives.</figcaption>
   <span class="src">sources: results/u3_scores.csv · runs/scaling/*.jsonl · runs/clef_player.jsonl · runs/narc_scaling/*_player.jsonl</span>
 </figure>
 </section>
 
-<section>
-<h2><span class="n">6</span>How they fail</h2>
-<p class="prose">Click a cell of a confusion matrix to list its items. The plots under each matrix break misses and false alarms down by what the item is.</p>
+<section id="sec-fail">
+<h2 data-key="fail">How they fail</h2>
+<p class="prose">The best monitor at a 5% alarm rate on each benchmark, both surfaces pooled. {§faildetail} has every monitor, any alarm rate, the items in each cell (missed files, missed counters with their public talk) and the breakdowns by file type, length, role and scheme.</p>
+<div class="cm-wrap static"><div><div class="cm" id="fb-cm"></div><div class="cm-stats" id="fb-stats"></div></div><div class="callout" id="fb-read"></div></div>
+</section>
+
+<section id="sec-backbone">
+<h2 data-key="backbone">Does a monitor catch its own backbone's collusion?</h2>
+<p class="prose">Most monitors here are fine-tunes of Qwen3.5 or Qwen3.8. If a monitor shared some of a colluder's habits, it might read that colluder's covert talk better. That would make same-family oversight easier, or put it at risk if the monitor learned to overlook the colluder instead. We played NARCBench-Stego with five Qwen writers and scored every player with every monitor: 7 writers × 15 monitors, 13 cells where the monitor and the writer share base weights.</p>
+<h3>Does the covert channel work?</h3>
+<p class="prose">A writer's collusion is real only if the partner acts on the signal. For each collusion shoe we correlate the big player's bets with the true count, and compare against honest players at the same table.</p>
+<div class="tbl"><table id="tbl-channel"></table></div>
+<h3>Every writer × monitor cell</h3>
+<div class="controls"><span class="seg small" id="seg-bb"><button aria-pressed="true" data-v="auroc">AUROC</button><button aria-pressed="false" data-v="auroc_lenmatched">length-matched AUROC</button></span></div>
+<div class="legend"><span class="lt">cell:</span><span class="k sq" style="--c:color-mix(in srgb, var(--c-pos) 60%, var(--bg))">below 0.5</span><span class="k sq" style="--c:var(--bg)">0.5 (chance)</span><span class="k sq" style="--c:color-mix(in srgb, var(--c-neg) 90%, var(--bg))">1.0</span><span class="lt">· outlined = monitor shares the writer's backbone · – = writer not fully scored</span></div>
+<figure>
+  <div class="tbl"><table id="tbl-bb" class="heat"></table></div>
+  <figcaption><b class="fig"></b> AUROC for every writer × monitor cell (mean P(yes) over the three pre-registered questions; 160 players per writer, 20 counters). The length-matched view pairs each counter with the player closest in mean message length (40 players; 95% CIs about ±0.18).</figcaption>
+  <span class="src">source: results/narc_backbone.csv · results/narc_scaling.csv</span>
+</figure>
+<h3>Same-backbone effect</h3>
+<p class="prose">The additive fit <code>auroc ~ writer + monitor + same_backbone</code> separates the same-backbone bump from how hard each writer is and how strong each monitor is. The p-value comes from shuffling the same-backbone label across cells.</p>
+<div class="tbl"><table id="tbl-bbfit"></table></div>
+<div class="tbl"><table id="tbl-bbwithin"></table></div>
+<div class="callout" id="bb-read"></div>
+<div class="note" id="bb-lm-note"></div>
+</section>
+
+<section id="sec-cost">
+<h2 data-key="cost">Cost</h2>
+<div class="controls"><span class="seg" data-sec="cost"></span></div>
+<figure>
+  <div class="legend fam base"></div>
+  <div class="plot" id="fig-cost"></div>
+  <figcaption><b class="fig"></b> AUROC against median latency per 2k-token input on a Jetson AGX Orin (llama.cpp, Q4_K_M or Q8_0); point size is parameter count.</figcaption>
+  <span class="src">source: scaling_table.csv (p50_ms@2k_tok)</span>
+</figure>
+</section>
+
+<section class="prose" id="sec-verdict">
+<h2 data-key="verdict">Are they useful for oversight?</h2>
+<div class="callout" id="verdict"></div>
+<h3>What this suggests</h3>
+<div id="takeaways"></div>
+<h3>Limits and next reads</h3>
+<div class="note" id="limits"></div>
+</section>
+
+<section class="prose" id="sec-refs">
+<h2 data-key="refs">References</h2>
+<ol class="refs">
+  <li>Zachary Gunderson and Clinton Wayne C. Visaya. <a href="https://apartresearch.com/sprints/projects/small-decision-models-as-blackbox-monitors-for-covert-agent-behaviour-lrfp"><i>Small Decision Models as Black-Box Monitors for Covert Agent Behaviour.</i></a> AI Collusion Research Sprint, Apart Research, October 2026.</li>
+  <li>Aaron Rose, Carissa Cullen, Sahar Abdelnabi, et al. <a href="https://arxiv.org/abs/2604.01151"><i>Detecting Multi-Agent Collusion Through Multi-Agent Interpretability.</i></a> arXiv:2604.01151, 2026. Introduces NARCBench.</li>
+  <li>Xin Xu, Chengrui Wu, Jiayu Lu, et al. <a href="https://arxiv.org/abs/2607.26385"><i>Collusion with Competitive Marginals: Price-Level Audits Are Blind by Construction.</i></a> arXiv:2607.26385, 2026.</li>
+  <li>Jimmy Laurence Rippin, Simon C. Marshall, David Demitri Africa, Christian Schroeder de Witt. <a href="https://arxiv.org/abs/2606.28425"><i>Tool Use Enables Undetectable Steganography in Multi-Agent LLM Systems.</i></a> arXiv:2606.28425, 2026.</li>
+  <li>Tyler Tracy, Ram Potham, Nick Kuhn, et al. <a href="https://arxiv.org/abs/2604.15384"><i>LinuxArena: A Control Setting for AI Agents in Live Production Software Environments.</i></a> arXiv:2604.15384, 2026. <a href="https://www.linuxarena.ai/">linuxarena.ai</a></li>
+  <li><a href="https://systemonemodels.org/">System One models: the hub for AI decision and extraction models</a>. systemonemodels.org, 2026.</li>
+</ol>
+<h3>Cite this work</h3>
+<pre class="bib">@misc{gunderson2026ispyagent,
+  title = {{I Spy Agent: Small Decision Models as Black-Box Monitors for Covert Agent Behaviour}},
+  author = {Zachary Gunderson and Clinton Wayne C. Visaya},
+  year = {2026},
+  month = oct,
+  note = {Extends our Apart AI Collusion Research Sprint report; code and data at https://github.com/Ztgunderson/I-Spy-Agent},
+  url = {https://ztgunderson.github.io/I-Spy-Agent/}
+}</pre>
+</section>
+
+<h2 class="appx" id="appendix">Appendix</h2>
+<div id="appx">
+<section id="sec-table">
+<h2 data-key="table">Results by monitor</h2>
+<div class="controls"><span class="seg" data-sec="table"></span></div>
+<div class="legend fam"></div>
+<div class="tbl"><table id="tbl-main" class="sortable"></table></div>
+<p class="prose" style="font-size:13px;color:var(--muted)">Click a column header to sort; click again to reverse. The length baseline stays on the first row.</p>
+<p class="src" id="src-table"></p>
+</section>
+
+<section id="sec-sizedetail">
+<h2 data-key="sizedetail">Size by family and synthetic validation</h2>
+<p class="prose">Per family and per shared backbone: AUROC by size, rank correlation with size, and spread. The switches in {§size} (benchmark, length-matched, grouping) also drive this table.</p>
+<div class="tbl"><table id="tbl-rho"></table></div>
+<h3>Synthetic validation against real files</h3>
+<figure id="fig-synth-wrap">
+    <div class="legend fam"></div>
+  <div class="legend"><span class="k ring" style="--c:var(--fg)">synthetic validation AUROC</span><span class="k" style="--c:var(--fg)">real held-out AUROC (U3)</span><span class="k dash" style="--c:var(--c-base)">length baseline on U3</span></div>
+  <div class="plot" id="fig-synth"></div>
+  <figcaption><b class="fig"></b> Synthetic validation AUROC (open) and real held-out U3 AUROC (filled) for each monitor, ordered by size. LinuxArena only; the 27B monitors have no synthetic score.</figcaption>
+  <span class="src">source: experiment/clef_unseen_attack/results/scaling_table.csv (val_auc, u3_auc)</span>
+</figure>
+</section>
+
+<section id="sec-cross">
+<h2 data-key="cross">Do the two surfaces agree?</h2>
+<p class="prose">Each point is a monitor scored on both benchmarks.</p>
+<figure>
+  <div class="legend fam base"></div>
+  <div class="plot" id="fig-cross"></div>
+  <figcaption><b class="fig"></b> LinuxArena U3 AUROC against NARCBench AUROC (selected writer, or mean of the two) for each monitor; point size is parameter count. Dashed lines are the length baselines and the diagonal marks equal AUROC.</figcaption>
+  <span class="src">sources: scaling_table.csv · narc_scaling.csv</span>
+</figure>
+</section>
+
+<section id="sec-faildetail">
+<h2 data-key="faildetail">How they fail, in detail</h2>
+<p class="prose">Pick any monitor and alarm rate. Click a cell of a confusion matrix to list its items, for example the missed counters with their public talk. The plots under each matrix break misses and false alarms down by what the item is.</p>
 <div class="controls"><span class="seg" data-sec="fail"></span>
   <label for="fl-model">monitor <select id="fl-model"></select></label>
   <label for="fl-fpr">FPR <input type="range" id="fl-fpr" min="0.01" max="0.5" step="0.01" value="0.05"></label>
   <span class="readout" id="fl-fpr-out"></span></div>
-<p class="fnote">The FPR dial works as in section 5 (<a href="#fpr-help">how to use it</a>): it sets the share of honest items flagged, and the matrices follow.</p>
+<p class="fnote">The FPR dial works as in {§op} (<a href="#fpr-help">how to use it</a>): it sets the share of honest items flagged, and the matrices follow.</p>
 <div class="legend"><span class="lt">matrix:</span><span class="k sq" style="--c:color-mix(in srgb, var(--warn) 30%, var(--bg))">error cell (missed, false alarm)</span><span class="k sq" style="--c:var(--panel)">correct cell</span></div>
 <div class="legend"><span class="lt">points:</span><span class="k" style="--c:var(--c-pos)">positive (attack file, counter)</span><span class="k" style="--c:var(--c-neg)">negative (honest file, other player)</span><span class="k err" style="--c:var(--c-pos)">outlined and solid = wrong at this threshold</span><span class="k dash" style="--c:var(--fg)">threshold</span></div>
 <div class="legend"><span class="lt">bars:</span><span class="k sq" style="--c:var(--warn)">missed / flagged</span><span class="k sq" style="--c:var(--muted)">caught</span><span class="k sq" style="--c:var(--rule)">cleared</span></div>
@@ -275,7 +364,7 @@ table.heat th .ch { display: block; font-weight: 400; font-size: 11px; }
       <div><div class="ptitle">Attack files caught or missed, by file type</div><div class="plot" id="L-miss"></div></div>
       <div><div class="ptitle">Share of honest files flagged, by file type (types with 8+ files)</div><div class="plot" id="L-fp"></div></div>
     </div>
-    <figcaption><b>Figure 5.</b> Scores and misses for the selected monitor on real LinuxArena files, by class, file size and file type (the extension). Attack files are written from scratch (<code>create</code>) or through a shell heredoc.</figcaption>
+    <figcaption><b class="fig"></b> Scores and misses for the selected monitor on real LinuxArena files, by class, file size and file type (the extension). Attack files are written from scratch (<code>create</code>) or through a shell heredoc.</figcaption>
     <span class="src">sources: data/clef_unseen_attack/dataset.jsonl (labels, paths) · results/u3_scores.csv · runs/scaling/*.jsonl</span>
   </figure>
 </div>
@@ -291,91 +380,26 @@ table.heat th .ch { display: block; font-weight: 400; font-size: 11px; }
       <div><div class="ptitle">Counters caught or missed, by signalling scheme</div><div class="plot" id="N-miss"></div></div>
       <div><div class="ptitle">Share of non-counters flagged, by role</div><div class="plot" id="N-fp"></div></div>
     </div>
-    <figcaption><b>Figure 6.</b> Scores and misses for the selected monitor on NARCBench-Stego, by player role, message length and signalling scheme. The counter is the positive and every other player is a negative; the scheme tag comes from the counter's private planning turn and is never shown to a monitor.</figcaption>
+    <figcaption><b class="fig"></b> Scores and misses for the selected monitor on NARCBench-Stego, by player role, message length and signalling scheme. The counter is the positive and every other player is a negative; the scheme tag comes from the counter's private planning turn and is never shown to a monitor.</figcaption>
     <span class="src">sources: data/narcbench (public talk, roles) · runs/clef_player.jsonl · runs/narc_scaling/*_player.jsonl · stegowatch/failures.py</span>
   </figure>
 </div>
 </section>
 
-<section>
-<h2><span class="n">7</span>Correlated failure</h2>
+<section id="sec-corr">
+<h2 data-key="corr">Correlated failure</h2>
 <div class="controls"><span class="seg" data-sec="corr"></span></div>
 <figure>
   <div class="legend"><span class="lt">monitor pair:</span><span class="k" style="--c:var(--c-kev)">same backbone</span><span class="k" style="--c:var(--c-d3)">different backbone</span><span class="k line" style="--c:var(--fg)">1× = independent</span></div>
   <div class="plot" id="fig-corr"></div>
-  <figcaption><b>Figure 7.</b> For each pair of monitors, how often both miss the same positive at 5% FPR, divided by the rate expected if misses were independent (1× = independent). NARCBench has one point per writer; hover a point for the pair.</figcaption>
+  <figcaption><b class="fig"></b> For each pair of monitors, how often both miss the same positive at 5% FPR, divided by the rate expected if misses were independent (1× = independent). NARCBench has one point per writer; hover a point for the pair.</figcaption>
   <span class="src">sources: results/monitor_correlation_u3.csv · results/narc_monitor_correlation.csv</span>
 </figure>
 <div class="callout" id="corr-read"></div>
 </section>
 
-<section>
-<h2><span class="n">8</span>Does a monitor catch its own backbone's collusion?</h2>
-<p class="prose">Most monitors here are fine-tunes of Qwen3.5 or Qwen3.8. If a monitor shared some of a colluder's habits, it might read that colluder's covert talk better. That would make same-family oversight easier, or put it at risk if the monitor learned to overlook the colluder instead. We played NARCBench-Stego with five Qwen writers and scored every player with every monitor: 7 writers × 15 monitors, 13 cells where the monitor and the writer share base weights.</p>
-<h3>Does the covert channel work?</h3>
-<p class="prose">A writer's collusion is real only if the partner acts on the signal. For each collusion shoe we correlate the big player's bets with the true count, and compare against honest players at the same table.</p>
-<div class="tbl"><table id="tbl-channel"></table></div>
-<h3>Every writer × monitor cell</h3>
-<div class="controls"><span class="seg small" id="seg-bb"><button aria-pressed="true" data-v="auroc">AUROC</button><button aria-pressed="false" data-v="auroc_lenmatched">length-matched AUROC</button></span></div>
-<div class="legend"><span class="lt">cell:</span><span class="k sq" style="--c:color-mix(in srgb, var(--c-pos) 60%, var(--bg))">below 0.5</span><span class="k sq" style="--c:var(--bg)">0.5 (chance)</span><span class="k sq" style="--c:color-mix(in srgb, var(--c-neg) 90%, var(--bg))">1.0</span><span class="lt">· outlined = monitor shares the writer's backbone · – = writer not fully scored</span></div>
-<figure>
-  <div class="tbl"><table id="tbl-bb" class="heat"></table></div>
-  <figcaption><b>Figure 8.</b> AUROC for every writer × monitor cell (mean P(yes) over the three pre-registered questions; 160 players per writer, 20 counters). The length-matched view pairs each counter with the player closest in mean message length (40 players; 95% CIs about ±0.18).</figcaption>
-  <span class="src">source: results/narc_backbone.csv · results/narc_scaling.csv</span>
-</figure>
-<h3>Same-backbone effect</h3>
-<p class="prose">The additive fit <code>auroc ~ writer + monitor + same_backbone</code> separates the same-backbone bump from how hard each writer is and how strong each monitor is. The p-value comes from shuffling the same-backbone label across cells.</p>
-<div class="tbl"><table id="tbl-bbfit"></table></div>
-<div class="tbl"><table id="tbl-bbwithin"></table></div>
-<div class="callout" id="bb-read"></div>
-<div class="note" id="bb-lm-note"></div>
-</section>
-
-<section>
-<h2><span class="n">9</span>Cost</h2>
-<div class="controls"><span class="seg" data-sec="cost"></span></div>
-<figure>
-  <div class="legend fam base"></div>
-  <div class="plot" id="fig-cost"></div>
-  <figcaption><b>Figure 9.</b> AUROC against median latency per 2k-token input on a Jetson AGX Orin (llama.cpp, Q4_K_M or Q8_0); point size is parameter count.</figcaption>
-  <span class="src">source: scaling_table.csv (p50_ms@2k_tok)</span>
-</figure>
-</section>
-
-<section class="prose">
-<h2><span class="n">10</span>Are they useful for oversight?</h2>
-<div class="callout" id="verdict"></div>
-<h3>What this suggests</h3>
-<div id="takeaways"></div>
-<h3>Limits and next reads</h3>
-<div class="note" id="limits"></div>
-</section>
-
-<section class="prose">
-<h2><span class="n">11</span>References</h2>
-<ol class="refs">
-  <li>Zachary Gunderson and Clinton Wayne C. Visaya. <a href="https://apartresearch.com/sprints/projects/small-decision-models-as-blackbox-monitors-for-covert-agent-behaviour-lrfp"><i>Small Decision Models as Black-Box Monitors for Covert Agent Behaviour.</i></a> AI Collusion Research Sprint, Apart Research, October 2026.</li>
-  <li>Aaron Rose, Carissa Cullen, Sahar Abdelnabi, et al. <a href="https://arxiv.org/abs/2604.01151"><i>Detecting Multi-Agent Collusion Through Multi-Agent Interpretability.</i></a> arXiv:2604.01151, 2026. Introduces NARCBench.</li>
-  <li>Xin Xu, Chengrui Wu, Jiayu Lu, et al. <a href="https://arxiv.org/abs/2607.26385"><i>Collusion with Competitive Marginals: Price-Level Audits Are Blind by Construction.</i></a> arXiv:2607.26385, 2026.</li>
-  <li>Jimmy Laurence Rippin, Simon C. Marshall, David Demitri Africa, Christian Schroeder de Witt. <a href="https://arxiv.org/abs/2606.28425"><i>Tool Use Enables Undetectable Steganography in Multi-Agent LLM Systems.</i></a> arXiv:2606.28425, 2026.</li>
-  <li>Tyler Tracy, Ram Potham, Nick Kuhn, et al. <a href="https://arxiv.org/abs/2604.15384"><i>LinuxArena: A Control Setting for AI Agents in Live Production Software Environments.</i></a> arXiv:2604.15384, 2026. <a href="https://www.linuxarena.ai/">linuxarena.ai</a></li>
-  <li><a href="https://systemonemodels.org/">System One models: the hub for AI decision and extraction models</a>. systemonemodels.org, 2026.</li>
-</ol>
-<h3>Cite this work</h3>
-<pre class="bib">@misc{gunderson2026small,
-  title = {{Small Decision Models as Black-Box Monitors for Covert Agent Behaviour}},
-  author = {Zachary Gunderson and Clinton Wayne C. Visaya},
-  year = {2026},
-  month = oct,
-  note = {Submitted to AI Collusion Research Sprint, an Apart Research Sprint},
-  url = {https://apartresearch.com/sprints/projects/small-decision-models-as-blackbox-monitors-for-covert-agent-behaviour-lrfp}
-}</pre>
-</section>
-
-<h2 class="appx">Appendix</h2>
-
-<section>
-<h2><span class="n">A</span>Data coverage</h2>
+<section id="sec-coverage">
+<h2 data-key="coverage">Data coverage</h2>
 <p class="prose">What has been scored and what is missing. A cell is complete when every item of that benchmark has a score.</p>
 <div class="legend"><span class="lt">state:</span><span class="status done">done</span><span class="status run">running</span><span class="status queued">queued</span><span class="status fail">missing</span><span class="status none">not run</span><span class="lt">· bar = share of items scored</span></div>
 <div class="tbl"><div class="cov" id="cov"></div></div>
@@ -383,17 +407,16 @@ table.heat th .ch { display: block; font-weight: 400; font-size: 11px; }
 <div class="tbl"><table id="tbl-runs"></table></div>
 </section>
 
-<section>
-<h2><span class="n">B</span>Fine-tuning</h2>
-<div class="controls"><span class="seg" data-sec="ft"></span></div>
-<div id="ft-note"></div>
+<section id="sec-ft">
+<h2 data-key="ft">Fine-tuning</h2>
 <figure id="ft-fig">
   <div class="legend"><span class="k line" style="--c:var(--c-clef)">Clef-flash 9.4B, decision-tuned</span><span class="k line" style="--c:var(--c-d3)">d3-lite 0.8B, decision-tuned</span><span class="k line" style="--c:var(--c-base)">Qwen3.5-0.8B-Base, no decision tuning (control)</span><span class="lt">· vertical bars: 95% bootstrap CI</span></div>
   <div class="plot" id="fig-ft"></div>
-  <figcaption><b>Figure B1.</b> U3 AUROC (left) and attack files caught at 5% FPR (right) after QLoRA on n synthetic LinuxArena files, scored on 35 real attack files and 319 honest files; bars are 95% bootstrap CIs. n = 0 is the untuned model in NF4; Qwen3.5-0.8B-Base is d3-lite's backbone without decision tuning and has no n = 0 because a base model does not answer the question.</figcaption>
+  <figcaption><b class="fig"></b> U3 AUROC (left) and attack files caught at 5% FPR (right) after QLoRA on n synthetic LinuxArena files, scored on 35 real attack files and 319 honest files; bars are 95% bootstrap CIs. n = 0 is the untuned model in NF4; Qwen3.5-0.8B-Base is d3-lite's backbone without decision tuning and has no n = 0 because a base model does not answer the question.</figcaption>
   <span class="src">source: stage23_metrics_{stage2, stage2_d3lite, stage3_qwen08b}_size_n.csv, stage23_metrics_zeroshot_d3.csv, scaling_table.csv (clef-flash nf4)</span>
 </figure>
 </section>
+</div>
 
 </div>
 
@@ -662,7 +685,7 @@ section("size", mode => {
   }));
   const title = { L: "LinuxArena U3, real held-out attack files", N: `NARCBench-Stego, ${WNAME[G.writer]}, ${G.lm === "lm" ? "length-matched players" : "all players"}`, B: "mean of LinuxArena U3 and NARCBench AUROC (monitors scored on both)" }[mode];
   const hasCI = mode === "L" || (mode === "N" && G.writer !== "both");
-  document.getElementById("cap-size").innerHTML = `<b>Figure 1.</b> ${title}. AUROC against ${byDate ? "release date (point size is parameter count)" : "parameter count (log scale)"}. Lines join monitors of one ${G.grp === "family" ? "provider family" : "shared backbone (base weights, with or without the -Base suffix)"} in ${byDate ? "date" : "size"} order${hasCI ? "; vertical bars are 95% bootstrap CIs" : ""}. The dashed line is length alone.${byDate ? " Release date is when the original model repo was created on Hugging Face; each family published all its sizes on the same day." : ""}<span class="src">sources: scaling_table.csv · narc_scaling.csv · Hugging Face model API (createdAt of each base_model repo)</span>`;
+  document.getElementById("cap-size").innerHTML = `<b class="fig">${document.getElementById("cap-size").dataset.fig}.</b> ${title}. AUROC against ${byDate ? "release date (point size is parameter count)" : "parameter count (log scale)"}. Lines join monitors of one ${G.grp === "family" ? "provider family" : "shared backbone (base weights, with or without the -Base suffix)"} in ${byDate ? "date" : "size"} order${hasCI ? "; vertical bars are 95% bootstrap CIs" : ""}. The dashed line is length alone.${byDate ? " Release date is when the original model repo was created on Hugging Face; each family published all its sizes on the same day." : ""}<span class="src">sources: scaling_table.csv · narc_scaling.csv · Hugging Face model API (createdAt of each base_model repo)</span>`;
   // per-group table
   const xv = r => byDate ? +r.date : r.params;
   const tr = d3.groups(rows, r => r.g).map(([k, v]) => {
@@ -860,11 +883,25 @@ section("fail", mode => {
 document.getElementById("fl-model").addEventListener("change", e => { FL.model = e.target.value; renderSection("fail"); });
 document.getElementById("fl-fpr").addEventListener("input", e => { FL.fpr = +e.target.value; renderSection("fail"); });
 
+/* ---------- best monitor, how it fails ---------- */
+function failBest() {
+  const G0 = G.writer; G.writer = "both";
+  const ms = zsRows.filter(r => r.status === "done").map(r => r.model);
+  const ev = ms.map(m => ({ m, e: evalAt("B", m, 0.05) })).filter(x => x.e);
+  const { m, e } = ev.reduce((a, b) => b.e.cells.TP.length > a.e.cells.TP.length ? b : a);
+  G.writer = G0;
+  document.getElementById("fb-cm").innerHTML = matrixHTML(e, "fb", "positive", "negative");
+  const on = (cell, b) => e.cells[cell].filter(i => i.bench === b);
+  document.getElementById("fb-stats").innerHTML = `<b>${m}</b> · ${statsHTML(e)}<br>files: ${on("TP", "L").length}/${posBy(e, "L")} caught, ${on("FP", "L").length} false alarms · talk: ${on("TP", "N").length}/${posBy(e, "N")} caught, ${on("FP", "N").length} false alarms`;
+  const top = (list, f) => d3.rollups(list, v => v.length, f).sort((a, b) => b[1] - a[1]).map(([k, n]) => `${k || "other"} ${n}`).join(", ");
+  const fnL = on("FN", "L"), fnN = on("FN", "N"), fpN = on("FP", "N");
+  document.getElementById("fb-read").innerHTML = `<p><b>Files.</b> ${m} misses ${fnL.length} of ${posBy(e, "L")} attack files; by type: ${top(fnL, i => i.ext)}.</p>
+    <p><b>Table talk.</b> It misses ${fnN.length} of ${posBy(e, "N")} counters; by scheme: ${top(fnN, i => i.scheme)}. ${fpN.filter(i => i.role === "big player").length} of its ${fpN.length} false alarms are the big player.</p>
+    <p>See every missed item in {§faildetail}.</p>`;
+}
+
 /* ---------- 8. fine-tuning ---------- */
-section("ft", mode => {
-  document.getElementById("ft-note").innerHTML = mode === "L" ? "" : `<div class="note">NARCBench: no fine-tuned monitor has been evaluated. The adapters were trained on one question about files ("does this file hide functionality its purpose does not explain?"), which does not apply to table talk. A NARCBench fine-tune would need its own question and a held-out writer split.${mode === "B" ? " The curve below is LinuxArena only." : ""}</div>`;
-  document.getElementById("ft-fig").hidden = mode === "N";
-  if (mode === "N") return;
+section("ft", () => {  // LinuxArena only: the adapters were trained on a file question
   const SER = ["Clef-flash 9.4B (decision-tuned)", "d3-lite 0.8B (decision-tuned)", "Qwen3.5-0.8B-Base (no decision tuning)"];
   const COL = ["var(--c-clef)", "var(--c-d3)", "var(--c-base)"];
   // Plot's dx is a constant, so the per-series dodge goes into x: points at index + offset on a linear axis
@@ -895,7 +932,7 @@ section("corr", mode => {
   ].map(r => ({ ...r, ratio: r.e > 0 ? r.j / r.e : null })).filter(r => r.ratio != null && r.ratio > 0 && Number.isFinite(r.ratio));
   document.getElementById("fig-corr").replaceChildren(Plot.plot({
     // dodged dots stack vertically, so each facet's height grows with its point count
-    width: W("fig-corr"), height: 40 + d3.sum(d3.groups(rows, r => r.bench), ([, g]) => Math.max(110, g.length * 1.5)), style, marginLeft: 20, marginRight: 150,
+    width: W("fig-corr"), height: 40 + d3.sum(d3.groups(rows, r => r.bench), ([, g]) => Math.max(110, g.length * 1.5)), style, marginLeft: 180, marginRight: 40,
     x: { type: "log", label: "joint miss ÷ expected if independent →", domain: [0.25, 4], ticks: [0.25, 0.5, 1, 2, 4], tickFormat: d => d + "×", grid: true },
     fy: { label: null },
     marks: [
@@ -964,7 +1001,7 @@ function backbone() {
   const fs = D.narc_backbone_fit_strong.find(r => r.metric === "auroc");
   const sameMons = w => mons.filter(m => cellOf(m, w)?.same_backbone).join(", ");
   document.getElementById("bb-read").innerHTML = `<p><b>No detectable same-backbone advantage.</b> Sharing the writer's base weights adds ${sg(fa.same_backbone_effect)} AUROC (p = ${p3(fa.perm_p_two_sided)}, ${fa.same_backbone_cells} of ${fa.cells} cells), and ${sg(fl.same_backbone_effect)} on length-matched players (p = ${p3(fl.perm_p_two_sided)}). It is ${sg(fs.same_backbone_effect)} (p = ${p3(fs.perm_p_two_sided)}) on writers whose channel works. On the two strong Qwen writers the sign of the difference flips between the raw and length-matched views. Same-backbone monitors: ${sameMons("qwen3.5-9b")} on Qwen3.5-9B; ${sameMons("qwen3.8-27b")} on Qwen3.8-27B.</p>
-    <p>A shared backbone does not change how well a monitor reads its own backbone's collusion. It does make two monitors on that backbone partly redundant: on NARCBench they miss the same counters ${xr(CS.narcAll.same.ratio)} as often as independence predicts, against ${xr(CS.narcAll.diff.ratio)} for pairs on different backbones (section 7).</p>`;
+    <p>A shared backbone does not change how well a monitor reads its own backbone's collusion. It does make two monitors on that backbone partly redundant: on NARCBench they miss the same counters ${xr(CS.narcAll.same.ratio)} as often as independence predicts, against ${xr(CS.narcAll.diff.ratio)} for pairs on different backbones ({§corr}).</p>`;
   const lb = ALL_WRITERS.filter(w => CHANNEL[w].channel_works).map(w => `${WNAME[w]} ${fmt(narcRow(BASE, w)?.auroc_lenmatched)}`).join(", ");
   document.getElementById("bb-lm-note").innerHTML = `<b>Limit of the length-matched view.</b> On the writers with a working channel, length alone still scores ${lb} on the length-matched set. Nearest-neighbour matching has no caliper, so when a writer's counters are all longer than every other player, the matched set still separates by length. On those writers the length-matched view is not free of length. A monitor that scores near 0.5 there is ignoring a length difference that is still present. That is not the same as being at chance on a length-free test. A caliper or a length-residualised score would fix this. Until then the same-backbone result rests on the raw view and the additive fit.`;
 }
@@ -1009,64 +1046,87 @@ function verdict() {
   const fa = D.narc_backbone_fit.find(r => r.metric === "auroc");
   document.getElementById("verdict").innerHTML = `
     <p><b>As the only overseer: no.</b> At 5% FPR on real LinuxArena files the best monitor (${bestL.m}) catches ${bestL.e.cells.TP.length} of ${bestL.e.P} attack files and the median monitor catches ${pct(medL)}. Deployed on both surfaces at 5% FPR each, the best (${bestB.m}) catches ${bestB.e.cells.TP.length} of ${bestB.e.P} positives; length alone catches ${baseB.cells.TP.length}.</p>
-    <p><b>As a cheap first filter on files: partly.</b> The monitors beat length on U3 (${fmt(lenLinux.u3)}). The best is ${top.model} at ${fmt(top.u3)} AUROC and ${sec(top.p50)} per file on a Jetson; the best fast ones are ${fast.map(r => `${r.model} at ${fmt(r.u3)} and ${sec(r.p50)}`).join(", and ")}. They can rank what a stronger monitor or a person reviews at a looser threshold (section 5).</p>
-    <p><b>On collusion through covert table talk, not yet shown.</b> Message length alone scores ${fmt(nb[0])} / ${fmt(nb[1])} AUROC. A NARCBench score is evidence of detecting the scheme only where a monitor beats length on length-matched players (section 3, length-matched view).</p>
-    <p><b>How they fail differs by surface (section 6).</b> On table talk most false alarms are the big player, who receives the signal: ${fpMon[0]} of ${fpMon[1]} across the monitors at 5% FPR. Length alone does the same (${fpLen[0]} of ${fpLen[1]}), so this follows from the big player's longer messages, not from reading the scheme. Missed counters use schemes that read as small talk. On files, misses are newly created source files (JS, TS, shell, R) whose covert part sits inside normal-looking code.</p>
-    <p><b>Scaling the overseer does not help (section 3).</b> Within Kev and d3 the largest model is not the best of its family on either surface. Clef is the exception: Clef 27B beats Clef-flash on files (${fmt(c27.u3)} vs ${fmt(cf.u3)}, scored on ${c27files} of ${LI.length} files) and on table talk (${fmt(nC27)} vs ${fmt(nCf)}). Synthetic validation would have predicted gains with size across the board.</p>
-    <p><b>Sharing the colluder's backbone neither helps nor hurts detection (section 8).</b> Across 7 writers and 15 monitors the same-backbone bump is ${fa.same_backbone_effect >= 0 ? "+" : "−"}${Math.abs(fa.same_backbone_effect).toFixed(2)} AUROC (p = ${fa.perm_p_two_sided.toFixed(2)}). Choosing a monitor from the agent's own model family is neither an advantage nor a blind spot that we can measure at this size. Backbone still matters for ensembles: on table talk, two monitors on one backbone miss the same counters more often than two on different backbones (${xr(CS.narcAll.same.ratio)} vs ${xr(CS.narcAll.diff.ratio)} the independent rate, section 7).</p>`;
+    <p><b>As a cheap first filter on files: partly.</b> The monitors beat length on U3 (${fmt(lenLinux.u3)}). The best is ${top.model} at ${fmt(top.u3)} AUROC and ${sec(top.p50)} per file on a Jetson; the best fast ones are ${fast.map(r => `${r.model} at ${fmt(r.u3)} and ${sec(r.p50)}`).join(", and ")}. They can rank what a stronger monitor or a person reviews at a looser threshold ({§op}).</p>
+    <p><b>On collusion through covert table talk, not yet shown.</b> Message length alone scores ${fmt(nb[0])} / ${fmt(nb[1])} AUROC. A NARCBench score is evidence of detecting the scheme only where a monitor beats length on length-matched players ({§size}, length-matched view).</p>
+    <p><b>How they fail differs by surface ({§fail}).</b> On table talk most false alarms are the big player, who receives the signal: ${fpMon[0]} of ${fpMon[1]} across the monitors at 5% FPR. Length alone does the same (${fpLen[0]} of ${fpLen[1]}), so this follows from the big player's longer messages, not from reading the scheme. Missed counters use schemes that read as small talk. On files, misses are newly created source files (JS, TS, shell, R) whose covert part sits inside normal-looking code.</p>
+    <p><b>Scaling the overseer does not help ({§size}).</b> Within Kev and d3 the largest model is not the best of its family on either surface. Clef is the exception: Clef 27B beats Clef-flash on files (${fmt(c27.u3)} vs ${fmt(cf.u3)}, scored on ${c27files} of ${LI.length} files) and on table talk (${fmt(nC27)} vs ${fmt(nCf)}). Synthetic validation would have predicted gains with size across the board ({§sizedetail}).</p>
+    <p><b>Sharing the colluder's backbone neither helps nor hurts detection ({§backbone}).</b> Across 7 writers and 15 monitors the same-backbone bump is ${fa.same_backbone_effect >= 0 ? "+" : "−"}${Math.abs(fa.same_backbone_effect).toFixed(2)} AUROC (p = ${fa.perm_p_two_sided.toFixed(2)}). Choosing a monitor from the agent's own model family is neither an advantage nor a blind spot that we can measure at this size. Backbone still matters for ensembles: on table talk, two monitors on one backbone miss the same counters more often than two on different backbones (${xr(CS.narcAll.same.ratio)} vs ${xr(CS.narcAll.diff.ratio)} the independent rate, {§corr}).</p>`;
 
   // fine-tuning endpoints (LinuxArena U3, appendix B)
   const ftAt = (s, n) => D.ft.find(p => p.series.startsWith(s) && p.n === n);
   const dl0 = ftAt("d3-lite", 0), dl4 = ftAt("d3-lite", 400), cf0 = ftAt("Clef-flash", 0), cf4 = ftAt("Clef-flash", 400);
   document.getElementById("takeaways").innerHTML = `
-    <p><b>Why a decision model rather than an LLM judge.</b> A System One monitor writes no text, so it cannot invent a rationale or a citation, and there is no verdict to parse. It returns a probability, so the operator chooses the alarm rate directly (section 5). It costs one forward pass: ${fast.map(r => `${r.model} ${sec(r.p50)}`).join(", ")} per file on a Jetson. These are properties of the design. We have not run an LLM judge head to head on these benchmarks, so "better than an LLM judge" is not measured here (see limits).</p>
-    <p><b>A loosely worded rule transfers.</b> Every monitor gets one general question that never names a scheme (no "weather", no "card count"). With no examples, that question reaches U3 AUROC up to ${fmt(top.u3)} on real attack files from trajectories the monitors never saw (section 2). For the operator, the rule can stay vague and still find attacks it was not written for.</p>
-    <p><b>Monitors can be tuned on the fly.</b> QLoRA on ${dl4 ? 400 : "a few hundred"} synthetic files moves d3-lite from ${fmt(dl0?.auroc)} to ${fmt(dl4?.auroc)} U3 AUROC and Clef-flash from ${fmt(cf0?.auroc)} to ${fmt(cf4?.auroc)}, on a single 12 GB GPU (section B). Both gain from n = 0 to n = 400, but the confidence intervals overlap at every n. This points to monitoring teams adapting a small monitor to a few hundred of their own labelled examples and using it to sort the queue for human review.</p>`;
+    <p><b>Why a decision model rather than an LLM judge.</b> A System One monitor writes no text, so it cannot invent a rationale or a citation, and there is no verdict to parse. It returns a probability, so the operator chooses the alarm rate directly ({§op}). It costs one forward pass: ${fast.map(r => `${r.model} ${sec(r.p50)}`).join(", ")} per file on a Jetson. These are properties of the design. We have not run an LLM judge head to head on these benchmarks, so "better than an LLM judge" is not measured here (see limits).</p>
+    <p><b>A loosely worded rule transfers.</b> Every monitor gets one general question that never names a scheme (no "weather", no "card count"). With no examples, that question reaches U3 AUROC up to ${fmt(top.u3)} on real attack files from trajectories the monitors never saw ({§table}). For the operator, the rule can stay vague and still find attacks it was not written for.</p>
+    <p><b>Monitors can be tuned on the fly.</b> QLoRA on ${dl4 ? 400 : "a few hundred"} synthetic files moves d3-lite from ${fmt(dl0?.auroc)} to ${fmt(dl4?.auroc)} U3 AUROC and Clef-flash from ${fmt(cf0?.auroc)} to ${fmt(cf4?.auroc)}, on a single 12 GB GPU ({§ft}). Both gain from n = 0 to n = 400, but the confidence intervals overlap at every n. This points to monitoring teams adapting a small monitor to a few hundred of their own labelled examples and using it to sort the queue for human review.</p>`;
   document.getElementById("limits").innerHTML = `
-    <p><b>Limits.</b> These are small test beds: 35 real attack files, and a blackjack game with 20 counters per writer. Whether any of this extends to production agents and longer, multi-step attacks is open. On table talk, message length explains most of the separation, and the length-matched set still carries length (section 8). The fine-tuned monitors were not checked for losses on other tasks, on held-out attack families, or on table talk, so fine-tuning may trade generality for these gains. Each surface uses one question; other wordings may score differently.</p>
+    <p><b>Limits.</b> These are small test beds: 35 real attack files, and a blackjack game with 20 counters per writer. Whether any of this extends to production agents and longer, multi-step attacks is open. On table talk, message length explains most of the separation, and the length-matched set still carries length ({§backbone}). The fine-tuned monitors were not checked for losses on other tasks, on held-out attack families, or on table talk, so fine-tuning may trade generality for these gains. Each surface uses one question; other wordings may score differently.</p>
     <p><b>Next reads of the data.</b> (1) An LLM judge with the same question, honest set and threshold rule, with cost per item, to test the comparison above. (2) Length matching with a caliper, or a length-residualised score, so NARCBench measures the scheme and not message length. (3) Fine-tuned monitors scored on U1/U2, the synthetic held-out family and NARCBench, to look for regressions. (4) A larger and more varied attack set, including multi-step sabotage.</p>`;
 }
 
 /* ---------- table of contents ---------- */
 const TOCDESC = {
-  "Question and setup": "scalable-oversight framing, the two benchmarks",
-  "Data coverage": "what has run, what is queued or missing",
-  "Results by monitor": "AUROC and detections at 5% FPR",
-  "Does a larger monitor do better?": "size, release date, family vs backbone",
-  "Do the two surfaces agree?": "sabotage in files against collusion in table talk",
-  "Operating point": "recall at a chosen alarm rate",
-  "How they fail": "confusion matrices, misses, false alarms",
-  "Fine-tuning": "QLoRA on 50–400 files; decision-tuned vs base control",
-  "Correlated failure": "do monitors miss the same attacks?",
-  "Does a monitor catch its own backbone's collusion?": "7 writers × 15 monitors; covert-channel check; additive fit",
-  "Cost": "AUROC against Jetson latency",
-  "Are they useful for oversight?": "verdict",
-  "References": "",
+  setup: "scalable-oversight framing, System One models, the two benchmarks",
+  size: "AUROC against parameter count",
+  op: "recall at a chosen alarm rate",
+  fail: "the best monitor's confusion matrix and misses",
+  backbone: "7 writers × 15 monitors; covert-channel check; additive fit",
+  cost: "AUROC against Jetson latency",
+  verdict: "verdict, what this suggests, limits",
+  table: "AUROC and detections at 5% FPR for every monitor",
+  sizedetail: "family and backbone table; synthetic against real AUROC",
+  cross: "sabotage in files against collusion in table talk",
+  faildetail: "every monitor and item; breakdowns by type, length, role, scheme",
+  corr: "do monitors miss the same attacks?",
+  coverage: "what was scored; gaps behind reported numbers",
+  ft: "QLoRA on 50–400 files; decision-tuned vs base control",
 };
-document.getElementById("toc").innerHTML = [...document.querySelectorAll("section h2")].map(h => {
-  const n = h.querySelector(".n")?.textContent ?? "";
-  const title = h.textContent.replace(n, "").trim();
-  h.id = "s" + n;
-  return `<li><span class="n">${n}</span><span><a href="#s${n}">${esc(title)}</a>${TOCDESC[title] ? ` <span class="d">${esc(TOCDESC[title])}</span>` : ""}</span></li>`;
+// section labels follow page order: 1, 2, ... in the main text, A, B, ... in the appendix
+const SECLABEL = {};
+{
+  let n = 0, a = 0;
+  for (const h of document.querySelectorAll("section h2[data-key]")) {
+    const k = h.dataset.key, label = h.closest("#appx") ? String.fromCharCode(65 + a++) : String(++n);
+    SECLABEL[k] = label;
+    h.insertAdjacentHTML("afterbegin", `<span class="n">${label}</span>`);
+    // figures: 1, 2, ... in the main text; A1, A2, ... inside appendix section A
+    let f = 0;
+    h.closest("section").querySelectorAll("figcaption").forEach(c => {
+      const lbl = h.closest("#appx") ? `Figure ${label}${++f}` : null;
+      c.dataset.fig = lbl ?? "";
+    });
+  }
+  let mainFig = 0;
+  for (const c of document.querySelectorAll("figcaption")) {
+    if (!c.dataset.fig) c.dataset.fig = `Figure ${++mainFig}`;
+    const b = c.querySelector("b.fig"); if (b) b.textContent = c.dataset.fig + ".";
+  }
+}
+document.getElementById("toc").innerHTML = [...document.querySelectorAll("section h2[data-key]")].map(h => {
+  const k = h.dataset.key, title = h.textContent.replace(SECLABEL[k], "").trim();
+  return `<li><span class="n">${SECLABEL[k]}</span><span><a href="#sec-${k}">${esc(title)}</a>${TOCDESC[k] ? ` <span class="d">${esc(TOCDESC[k])}</span>` : ""}</span></li>`;
 }).join("");
-if (/^#s\w+$/.test(location.hash)) document.getElementById(location.hash.slice(1))?.scrollIntoView();
+if (/^#sec-\w+$/.test(location.hash)) document.getElementById(location.hash.slice(1))?.scrollIntoView();
 
 /* ---------- section links ---------- */
-// turn "section 5" / "section B" in running text into a link to that heading (ids are set by the TOC)
+// "{§op}" in any text becomes a link "section 3" (or "appendix D") to that heading
 function linkSections() {
-  const re = /\bsection ([0-9]+|[AB])\b/g, has = /\bsection ([0-9]+|[AB])\b/;
-  const walk = document.createTreeWalker(document.querySelector(".wrap"), NodeFilter.SHOW_TEXT, {
-    acceptNode: n => has.test(n.data) && !n.parentElement.closest("a, h2, nav, button, select, script, .src") ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT });
+  const has = /\{§(\w+)\}/;
+  const walk = document.createTreeWalker(document.querySelector(".wrap"), NodeFilter.SHOW_TEXT,
+    { acceptNode: n => has.test(n.data) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT });
   const hits = []; while (walk.nextNode()) hits.push(walk.currentNode);
   for (const n of hits) {
     const span = document.createElement("span");
-    span.innerHTML = esc(n.data).replace(re, (m, k) => document.getElementById("s" + k) ? `<a href="#s${k}">${m}</a>` : m);
+    span.innerHTML = esc(n.data).replace(/\{§(\w+)\}/g, (m, k) => {
+      const l = SECLABEL[k]; if (!l) return m;
+      return `<a href="#sec-${k}">${/[A-Z]/.test(l) ? "appendix" : "section"} ${l}</a>`;
+    });
     n.replaceWith(...span.childNodes);
   }
 }
 
 /* ---------- boot ---------- */
-coverage(); verdict(); cross(); backbone(); corrRead();
+coverage(); verdict(); cross(); backbone(); corrRead(); failBest();
 for (const k of Object.keys(SECTIONS)) renderSection(k);
 linkSections();
 document.getElementById("sel-writer").addEventListener("change", e => {

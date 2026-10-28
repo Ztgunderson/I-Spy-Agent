@@ -8,3 +8,9 @@ models/
 site/data.json
 site/i-spy-agent.html
 site/check.js
+
+# local notes, not published
+CLAUDE.md
+FINDINGS.md
+PAPER.md
+REPORT_DRAFT.md

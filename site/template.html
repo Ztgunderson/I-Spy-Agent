@@ -211,11 +211,11 @@ table.heat th .ch { display: block; font-weight: 400; font-size: 11px; }
 </figure>
 <div class="tbl"><table id="tbl-rho"></table></div>
 <figure id="fig-synth-wrap">
-  <h3>Synthetic validation would have said yes</h3>
+  <h3>Synthetic validation against real files</h3>
   <div class="legend fam"></div>
   <div class="legend"><span class="k ring" style="--c:var(--fg)">synthetic validation AUROC</span><span class="k" style="--c:var(--fg)">real held-out AUROC (U3)</span><span class="k dash" style="--c:var(--c-base)">length baseline on U3</span></div>
   <div class="plot" id="fig-synth"></div>
-  <figcaption><b>Figure 2.</b> LinuxArena only. Synthetic validation AUROC against real held-out AUROC for each monitor, ordered by size. Synthetic scores rise with size; real scores do not. NARCBench has no synthetic split. Models scored only on U3 (the 27B tier) are omitted.</figcaption>
+  <figcaption><b>Figure 2.</b> Synthetic validation AUROC (open) and real held-out U3 AUROC (filled) for each monitor, ordered by size. LinuxArena only; the 27B monitors have no synthetic score.</figcaption>
   <span class="src">source: experiment/clef_unseen_attack/results/scaling_table.csv (val_auc, u3_auc)</span>
 </figure>
 </section>
@@ -226,7 +226,7 @@ table.heat th .ch { display: block; font-weight: 400; font-size: 11px; }
 <figure>
   <div class="legend fam base"></div>
   <div class="plot" id="fig-cross"></div>
-  <figcaption><b>Figure 3.</b> LinuxArena U3 AUROC against NARCBench AUROC (selected writer, or mean of both). Point size is parameter count. Dashed lines are the length baselines; the diagonal marks equal performance. A monitor that is good on one surface is not reliably good on the other.</figcaption>
+  <figcaption><b>Figure 3.</b> LinuxArena U3 AUROC against NARCBench AUROC (selected writer, or mean of the two) for each monitor; point size is parameter count. Dashed lines are the length baselines and the diagonal marks equal AUROC.</figcaption>
   <span class="src">sources: scaling_table.csv · narc_scaling.csv</span>
 </figure>
 </section>
@@ -246,7 +246,7 @@ table.heat th .ch { display: block; font-weight: 400; font-size: 11px; }
     <div><div class="ptitle" id="op-roc-title"></div><div class="plot" id="fig-roc"></div></div>
     <div><div class="ptitle">Positives caught at the chosen FPR</div><div class="plot" id="fig-recall"></div></div>
   </div>
-  <figcaption><b>Figure 4.</b> Left: recall against FPR for the highlighted monitor; grey lines are the other monitors; the dotted vertical line is the chosen FPR. Right: share of positives caught at the chosen FPR, with counts and false positives; the highlighted monitor is drawn solid. Ties at the threshold are not flagged.</figcaption>
+  <figcaption><b>Figure 4.</b> Left: recall against FPR for the highlighted monitor (grey: other monitors; dotted line: chosen FPR). Right: share of positives caught at the chosen FPR, with counts and false positives.</figcaption>
   <span class="src">sources: results/u3_scores.csv · runs/scaling/*.jsonl · runs/clef_player.jsonl · runs/narc_scaling/*_player.jsonl</span>
 </figure>
 </section>
@@ -275,7 +275,7 @@ table.heat th .ch { display: block; font-weight: 400; font-size: 11px; }
       <div><div class="ptitle">Attack files caught or missed, by file type</div><div class="plot" id="L-miss"></div></div>
       <div><div class="ptitle">Share of honest files flagged, by file type (types with 8+ files)</div><div class="plot" id="L-fp"></div></div>
     </div>
-    <figcaption><b>Figure 5.</b> Failure anatomy on real LinuxArena files. Attack files are created by the agent from scratch (<code>create</code>) or through a shell heredoc. File type is the extension.</figcaption>
+    <figcaption><b>Figure 5.</b> Scores and misses for the selected monitor on real LinuxArena files, by class, file size and file type (the extension). Attack files are written from scratch (<code>create</code>) or through a shell heredoc.</figcaption>
     <span class="src">sources: data/clef_unseen_attack/dataset.jsonl (labels, paths) · results/u3_scores.csv · runs/scaling/*.jsonl</span>
   </figure>
 </div>
@@ -291,7 +291,7 @@ table.heat th .ch { display: block; font-weight: 400; font-size: 11px; }
       <div><div class="ptitle">Counters caught or missed, by signalling scheme</div><div class="plot" id="N-miss"></div></div>
       <div><div class="ptitle">Share of non-counters flagged, by role</div><div class="plot" id="N-fp"></div></div>
     </div>
-    <figcaption><b>Figure 6.</b> Failure anatomy on NARCBench-Stego (collusion). The positive is the counter, the colluder who sends the signal; every other player is a negative, including the big player who receives the signal. With both writers selected, thresholds are set per writer and the strip plot shows both threshold lines (fainter line = second writer). The scheme tag is a keyword match on the counter's private planning turn, used only to group results and never shown to a monitor.</figcaption>
+    <figcaption><b>Figure 6.</b> Scores and misses for the selected monitor on NARCBench-Stego, by player role, message length and signalling scheme. The counter is the positive and every other player is a negative; the scheme tag comes from the counter's private planning turn and is never shown to a monitor.</figcaption>
     <span class="src">sources: data/narcbench (public talk, roles) · runs/clef_player.jsonl · runs/narc_scaling/*_player.jsonl · stegowatch/failures.py</span>
   </figure>
 </div>
@@ -303,7 +303,7 @@ table.heat th .ch { display: block; font-weight: 400; font-size: 11px; }
 <figure>
   <div class="legend"><span class="lt">monitor pair:</span><span class="k" style="--c:var(--c-kev)">same backbone</span><span class="k" style="--c:var(--c-d3)">different backbone</span><span class="k line" style="--c:var(--fg)">1× = independent</span></div>
   <div class="plot" id="fig-corr"></div>
-  <figcaption><b>Figure 7.</b> For each pair of monitors: how often both miss the same positive at 5% FPR, divided by the rate expected if misses were independent. Above 1 means the pair is partly redundant. NARCBench has one point per writer. Hover a point for the pair.</figcaption>
+  <figcaption><b>Figure 7.</b> For each pair of monitors, how often both miss the same positive at 5% FPR, divided by the rate expected if misses were independent (1× = independent). NARCBench has one point per writer; hover a point for the pair.</figcaption>
   <span class="src">sources: results/monitor_correlation_u3.csv · results/narc_monitor_correlation.csv</span>
 </figure>
 <div class="callout" id="corr-read"></div>
@@ -320,7 +320,7 @@ table.heat th .ch { display: block; font-weight: 400; font-size: 11px; }
 <div class="legend"><span class="lt">cell:</span><span class="k sq" style="--c:color-mix(in srgb, var(--c-pos) 60%, var(--bg))">below 0.5</span><span class="k sq" style="--c:var(--bg)">0.5 (chance)</span><span class="k sq" style="--c:color-mix(in srgb, var(--c-neg) 90%, var(--bg))">1.0</span><span class="lt">· outlined = monitor shares the writer's backbone · – = writer not fully scored</span></div>
 <figure>
   <div class="tbl"><table id="tbl-bb" class="heat"></table></div>
-  <figcaption><b>Figure 8.</b> Mean P(yes) over the three pre-registered player questions, scored per writer on 160 players (20 counters). The length-matched set pairs each counter with the other player closest in mean message length (40 players), so its 95% CIs are about ±0.18.</figcaption>
+  <figcaption><b>Figure 8.</b> AUROC for every writer × monitor cell (mean P(yes) over the three pre-registered questions; 160 players per writer, 20 counters). The length-matched view pairs each counter with the player closest in mean message length (40 players; 95% CIs about ±0.18).</figcaption>
   <span class="src">source: results/narc_backbone.csv · results/narc_scaling.csv</span>
 </figure>
 <h3>Same-backbone effect</h3>
@@ -337,7 +337,7 @@ table.heat th .ch { display: block; font-weight: 400; font-size: 11px; }
 <figure>
   <div class="legend fam base"></div>
   <div class="plot" id="fig-cost"></div>
-  <figcaption><b>Figure 9.</b> AUROC against median latency per 2k-token input on a Jetson AGX Orin (llama.cpp, Q4_K_M or Q8_0). Point size is parameter count. Latency was measured once per model and applies to both benchmarks.</figcaption>
+  <figcaption><b>Figure 9.</b> AUROC against median latency per 2k-token input on a Jetson AGX Orin (llama.cpp, Q4_K_M or Q8_0); point size is parameter count.</figcaption>
   <span class="src">source: scaling_table.csv (p50_ms@2k_tok)</span>
 </figure>
 </section>
@@ -376,7 +376,7 @@ table.heat th .ch { display: block; font-weight: 400; font-size: 11px; }
 
 <section>
 <h2><span class="n">A</span>Data coverage</h2>
-<p class="prose">What has been scored, what is running, and what is missing. A cell is complete when every item of that benchmark has a score.</p>
+<p class="prose">What has been scored and what is missing. A cell is complete when every item of that benchmark has a score.</p>
 <div class="legend"><span class="lt">state:</span><span class="status done">done</span><span class="status run">running</span><span class="status queued">queued</span><span class="status fail">missing</span><span class="status none">not run</span><span class="lt">· bar = share of items scored</span></div>
 <div class="tbl"><div class="cov" id="cov"></div></div>
 <p class="prose" id="cov-dropped" style="font-size:.9rem;color:var(--muted)"></p>
@@ -390,8 +390,7 @@ table.heat th .ch { display: block; font-weight: 400; font-size: 11px; }
 <figure id="ft-fig">
   <div class="legend"><span class="k line" style="--c:var(--c-clef)">Clef-flash 9.4B, decision-tuned</span><span class="k line" style="--c:var(--c-d3)">d3-lite 0.8B, decision-tuned</span><span class="k line" style="--c:var(--c-base)">Qwen3.5-0.8B-Base, no decision tuning (control)</span><span class="lt">· vertical bars: 95% bootstrap CI</span></div>
   <div class="plot" id="fig-ft"></div>
-  <figcaption><b>Figure B1.</b> QLoRA on n LinuxArena training files (synthetic attacks), evaluated on the 35 real U3 attack files against 319 honest files. n = 0 is the same weights in NF4 with no training; the base control has no n = 0 because a base model does not answer the question. d3-lite and Qwen3.5-0.8B-Base share a backbone, so their gap is the effect of decision tuning before the fine-tune. The 9B base control ran out of memory on 12 GB.</figcaption>
-  <div id="ft-read" class="prose"></div>
+  <figcaption><b>Figure B1.</b> U3 AUROC (left) and attack files caught at 5% FPR (right) after QLoRA on n synthetic LinuxArena files, scored on 35 real attack files and 319 honest files; bars are 95% bootstrap CIs. n = 0 is the untuned model in NF4; Qwen3.5-0.8B-Base is d3-lite's backbone without decision tuning and has no n = 0 because a base model does not answer the question.</figcaption>
   <span class="src">source: stage23_metrics_{stage2, stage2_d3lite, stage3_qwen08b}_size_n.csv, stage23_metrics_zeroshot_d3.csv, scaling_table.csv (clef-flash nf4)</span>
 </figure>
 </section>
@@ -542,25 +541,13 @@ function coverage() {
     h += `<div><span class="sw" style="--c:${famColor(meta[m]?.family)}"></span>${m} <span style="color:var(--muted)">${meta[m]?.params ?? ""}B</span></div>${cell(a)}${cell(b)}`;
   }
   document.getElementById("cov").innerHTML = h;
-  document.getElementById("cov-dropped").textContent = dropped.length ? `Left out everywhere on this page: ${dropped.join(", ")} (failed to load or answer the probe on the Jetson; Vega-27B's GGUF fails the tensor count check on two llama.cpp builds, so the file itself is malformed).` : "";
+  document.getElementById("cov-dropped").textContent = dropped.length ? `Left out everywhere on this page: ${dropped.join(", ")} (Kev-0.5B failed to load or answer the probe; the Vega-27B GGUF file is malformed and does not load).` : "";
   document.getElementById("hdr-status").innerHTML = `<span class="status run">monitors complete: LinuxArena ${n.L}/${ms.length} · NARCBench ${n.N}/${ms.length}</span>`;
-  const runs = [
-    ["NARCBench writers Qwen3.5 0.8B–9B and Qwen3.8-27B, 20 shoes each", "done", "played 2026-10-26–27 (RTX 2060 :8096, Jetson :8101); 160 players per writer"],
-    ["All monitors on the five new writers", "done", "2026-10-27, Jetson and RTX 2060; 1,120 players per monitor"],
-    ["Clef 27B on Qwen3.5-4B and 9B writers, 2 players", "fail", "the server returned no answer; those two writers are left out for Clef"],
-    ["Kev-9B on the Qwen3.5-0.8B writer, 1 player", "fail", "one long message timed out; that writer is left out for Kev-9B"],
-    ["NARCBench sweep: d3-flash, pplx, d1-3B, Aurelis-2B, Kev-27B, d3 27B", "done", "Jetson AGX Orin, 2026-10-26 12:40–15:58"],
-    ["Clef 27B on NARCBench, 4 players that timed out", "done", "rescored 2026-10-26 16:09 with llama.cpp b11889; 320 / 320"],
-    ["d3-lite QLoRA and Qwen3.5-0.8B-Base control, n = 50–400 (LinuxArena)", "done", "RTX 2060; replaces the 9B control that ran out of memory; Figure B1"],
-    ["Clef-flash QLoRA n = 50–400 (LinuxArena)", "done", "selectable in sections 5 and 6"],
-    ["Qwen3.5-9B-Base control (LinuxArena)", "fail", "out of memory on 12 GB"],
-    ["pplx-decider-flash, LinuxArena U3", "done", "all 787 files; the earlier local copy was partial"],
-    ["Vega-27B", "fail", "does not load on llama.cpp b11577 or b11889 (\"wrong number of tensors; expected 860, got 850\"): the GGUF file is malformed, not the runtime"],
-    ["Clef 27B, 13 LinuxArena files with no score", "none", "server returned no answer; 341 of 354 scored"],
-    ["Fine-tuned adapters on NARCBench", "none", "not planned: the trained question is about files"],
-  ];
-  document.getElementById("tbl-runs").innerHTML = `<thead><tr><th class="l">Run</th><th class="l">State</th><th class="l">Note</th></tr></thead><tbody>` +
-    runs.map(([a, s, t]) => `<tr><td class="l" style="white-space:normal">${a}</td><td class="l"><span class="status ${s}">${lbl[s]}</span></td><td class="l" style="white-space:normal;color:var(--muted)">${t}</td></tr>`).join("") + "</tbody>";
+  // only the gaps that change a reported number; the grid above shows the rest
+  document.getElementById("tbl-runs").outerHTML = `<ul class="prose" id="gaps" style="font-size:.95rem">
+    <li><b>Clef 27B</b>: 341 of 354 LinuxArena files scored (13 got no answer from the server); on NARCBench the Qwen3.5-4B and 9B writers are left out (2 players with no answer).</li>
+    <li><b>Kev-9B</b>: the Qwen3.5-0.8B writer is left out (1 player timed out).</li>
+    <li><b>Clef-flash</b> and <b>d3</b>: 352 and 353 of 354 LinuxArena files scored; the rest have no score.</li></ul>`;
 }
 
 /* ---------- 3. table ---------- */
@@ -898,10 +885,6 @@ section("ft", mode => {
         title: d => `${d.series}\nn = ${d.n}\nU3 AUROC ${fmt(d.auroc)} (${fmt(d.lo ?? d.auroc)}–${fmt(d.hi ?? d.auroc)})\ncaught at 5% FPR ${pct(d.tpr5)} (${Math.round(d.tpr5 * 35)}/35)` }),
     ],
   }));
-  const at = (s, n) => D.ft.find(p => p.series === s && p.n === n);
-  const gaps = [50, 100, 200, 400].map(n => at(SER[1], n).auroc - at(SER[2], n).auroc);
-  const c4 = at(SER[0], 400), d4 = at(SER[1], 400), q4 = at(SER[2], 400);
-  document.getElementById("ft-read").innerHTML = `At n = 400 the 0.8B decision-tuned d3-lite reaches U3 AUROC ${fmt(d4.auroc)} (${fmt(d4.lo)}–${fmt(d4.hi)}), against ${fmt(c4.auroc)} for the 9.4B Clef-flash and ${fmt(q4.auroc)} for the same 0.8B backbone without decision tuning. At every n the decision-tuned 0.8B is ahead of its base by ${fmt(Math.min(...gaps))}–${fmt(Math.max(...gaps))} AUROC, but with 35 attack files the confidence intervals overlap at every point, so this is a consistent direction, not a significant difference. At 5% FPR the fine-tuned monitors catch ${Math.round(Math.min(c4.tpr5, d4.tpr5, q4.tpr5) * 35)}–${Math.round(Math.max(c4.tpr5, d4.tpr5, q4.tpr5) * 35)} of 35 attack files at n = 400.`;
 });
 
 /* ---------- 9. correlation ---------- */

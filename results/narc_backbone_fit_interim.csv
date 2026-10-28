@@ -1,0 +1,3 @@
+metric,same_backbone_effect,perm_p_two_sided,cells,same_backbone_cells,resid_sd
+auroc,0.03378977677163497,0.2505,76,7,0.06649664257149415
+auroc_lenmatched,0.0029864239034598783,0.8955,76,7,0.07521412266709053
